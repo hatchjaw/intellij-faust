@@ -48,10 +48,9 @@ jobs:
           # Move content
           mkdir -p src/main/kotlin/${GROUP//.//}
           mkdir -p src/test/kotlin/${GROUP//.//}
-          cp -Rfv .github/template-cleanup/* .
-          cp -Rfv .github/template-cleanup/.* .
-          cp -Rfv src/main/kotlin/org/jetbrains/plugins/template/* src/main/kotlin/${GROUP//.//}/
-          cp -Rfv src/test/kotlin/org/jetbrains/plugins/template/* src/test/kotlin/${GROUP//.//}/
+          cp -R .github/template-cleanup/* .
+          cp -R src/main/kotlin/org/jetbrains/plugins/template/* src/main/kotlin/${GROUP//.//}/
+          cp -R src/test/kotlin/org/jetbrains/plugins/template/* src/test/kotlin/${GROUP//.//}/
 
           # Cleanup
           rm -rf \
