@@ -6,13 +6,19 @@
 
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.FaustBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.hatchjaw.intellijfaust.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+
+        <fileType name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
+                  implementationClass="com.github.hatchjaw.intellijfaust.FaustDSPFileType"/>
+        <fileType name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
+                  implementationClass="com.github.hatchjaw.intellijfaust.FaustLibFileType"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.hatchjaw.intellijfaust.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+        <listener class="com.github.hatchjaw.intellijfaust.listeners.MyApplicationActivationListener"
+                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 </idea-plugin>
