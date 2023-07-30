@@ -1,0 +1,131 @@
+{
+  parserClass="com.github.hatchjaw.faust.FaustParser"
+  parserUtilClass="com.github.hatchjaw.faust.FaustParserUtil"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Faust"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.github.hatchjaw.faust.psi"
+  psiImplPackage="com.github.hatchjaw.faust.psi.impl"
+
+  elementTypeHolderClass="com.github.hatchjaw.faust.psi.FaustTypes"
+  elementTypeClass="com.github.hatchjaw.faust.psi.FaustElementType"
+  tokenTypeClass="com.github.hatchjaw.faust.psi.FaustTokenType"
+
+    tokens = [
+        WHITESPACE='regexp:\s+'
+        LINE_COMMENT='regexp://.*'
+        IDENTIFIER='regexp:\p{Alpha}\w*'
+        LIBFILE='regexp:"\w+\.lib"'
+        LIBFILE_NOQUOTE='regexp:\w+\.lib'
+        CINCLUDE='regexp:(<\w+\.h>|"\w+\.h")'
+        STRING='regexp:"([^\"\\]|\\.)*"'
+        NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'
+
+        // Composition operations
+        REC='~'
+        PAR=','
+        SEQ=':'
+        SPLIT='<:'
+        MERGE=':>'
+
+        // Primitives
+        SIGIDENTITY='_'
+        CUT='!'
+        ADD='+'
+        SUB='-'
+        MUL='*'
+        POW='^'
+        DIV='/'
+        REM='%'
+
+        // Comparisons
+        LT='<'
+        LTE='<='
+        GT='>'
+        GTE='>='
+        EQ='=='
+        NEQ='!='
+
+        // Time
+        MEM='mem'
+        DELAY1="'"
+        DELAY='@'
+    ]
+}
+
+Program ::= Root*
+private Root ::= !<<eof>> Statement //{pin=1}
+
+private Statement ::= (FileImport | Declaration | Definition | FunctionDefinition) ';'
+
+FileImport ::= import '(' LIBFILE ')'
+
+Declaration ::= declare [IDENTIFIER] (name|author|copyright|version|license|description) STRING
+
+Definition ::= IDENTIFIER '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
+private DefinitionRecover ::= !(';' | IDENTIFIER '=')
+
+// NB also supports pattern matching, e.g.
+//  duplicate(1,x) = x;
+//  duplicate(n,x) = x, duplicate(n-1,x);
+// The following should be supported too, but that'll need another rule.
+//  duplicate = case {
+//      (1,x) => x;
+//      (n,x) => x, duplicate(n-1,x);
+//  };
+FunctionDefinition ::= IDENTIFIER '(' ParameterSeq ')' '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
+ParameterSeq ::= (IDENTIFIER|NUMBER) [ ',' ParameterSeq ]
+
+Expression ::= Library | Environment | DiagramExp | NUMBER
+
+Library ::= library '(' LIBFILE ')'
+
+DiagramExp ::= DiagComposition [With] // | DiagIteration
+With ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
+
+DiagComposition ::= (ExpressionElement [ CompositionOperation DiagComposition ]) |
+    '(' (ExpressionElement [ CompositionOperation DiagComposition ]) ')'
+ExpressionElement ::=
+    (FunctionCall [Access]) |
+    ForeignExpression |
+    Infix |
+    Prefix |
+    Partial |
+    Operand |
+    SIGIDENTITY |
+    CUT |
+    TypeCast |
+    Operator
+CompositionOperation ::= REC | PAR | SEQ | MERGE | SPLIT
+
+UIElement ::= UIElementButton |
+              UIElementSlider |
+              UIElementGroup |
+              Attach
+
+UIElementButton ::= (button | checkbox) '(' STRING ')'
+UIElementSlider ::= (hslider | vslider | nentry) '(' STRING ',' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER ')'
+UIElementGroup ::= (hgroup | vgroup | tgroup) '(' STRING ',' BlockDiagram ')'
+Attach ::= attach '(' Expression ',' Expression ')'
+
+TypeCast ::= int | float
+Infix ::= Operand Operator [Infix | Operand]
+Prefix ::= Operator '(' Operand ',' Operand ')'
+Partial ::= Operator '(' Operand ')'
+Operand ::= (IDENTIFIER [Access]) | (['-']NUMBER) | UIElement | SIGIDENTITY
+Operator ::= ADD | SUB | MUL | POW | DIV | REM | MEM | DELAY1 | DELAY
+FunctionCall ::= IDENTIFIER '(' ArgumentSeq ')'
+ArgumentSeq ::= Expression [ ',' ArgumentSeq ]
+Access ::= '.' (FunctionCall | IDENTIFIER)
+
+Environment ::= environment '{' ((Definition | FunctionDefinition) ';')* '}'
+
+ForeignExpression ::= ForeignFunction // | ForeignVariable | ForeignConstant
+ForeignFunction ::= ffunction '(' Signature ',' CINCLUDE ',' ('""' | LIBFILE) ')'
+Signature ::= Type FunNames '(' [ArgTypes] ')'
+Type ::= int | float
+FunNames ::= IDENTIFIER [ '|' FunNames]
+ArgTypes ::= ArgType [',' ArgTypes]
+ArgType ::= Type | any
