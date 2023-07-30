@@ -16,6 +16,7 @@
     tokens = [
         WHITESPACE='regexp:\s+'
         LINE_COMMENT='regexp://.*'
+        BLOCK_COMMENT='regexp:/\*(\*(?!/)|[^*])*\*/'
         IDENTIFIER='regexp:\p{Alpha}\w*'
         LIBFILE='regexp:"\w+\.lib"'
         LIBFILE_NOQUOTE='regexp:\w+\.lib'
@@ -40,11 +41,18 @@
         DIV='/'
         REM='%'
 
-        // Comparisons
-        LT='<'
-        LTE='<='
-        GT='>'
-        GTE='>='
+        // Bitwise Operators
+        OR='|'
+        AND='&'
+        XOR='xor'
+        LSHIFT='<<'
+        RSHIFT='>>'
+
+        // Comparators
+        LESS='<'
+        LEQ='<='
+        MORE='>'
+        GEQ='>='
         EQ='=='
         NEQ='!='
 
@@ -58,14 +66,14 @@
 Program ::= Root*
 private Root ::= !<<eof>> Statement //{pin=1}
 
-private Statement ::= (FileImport | Declaration | Definition | FunctionDefinition) ';'
+Statement ::= (FileImport | Declaration | Definition | FunctionDefinition) ';'
 
 FileImport ::= import '(' LIBFILE ')'
 
 Declaration ::= declare [IDENTIFIER] (name|author|copyright|version|license|description) STRING
 
 Definition ::= IDENTIFIER '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
-private DefinitionRecover ::= !(';' | IDENTIFIER '=')
+//private DefinitionRecover ::= !(';' | IDENTIFIER '=')
 
 // NB also supports pattern matching, e.g.
 //  duplicate(1,x) = x;
@@ -85,37 +93,91 @@ Library ::= library '(' LIBFILE ')'
 DiagramExp ::= DiagComposition [With] // | DiagIteration
 With ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
 
-DiagComposition ::= (ExpressionElement [ CompositionOperation DiagComposition ]) |
-    '(' (ExpressionElement [ CompositionOperation DiagComposition ]) ')'
-ExpressionElement ::=
-    (FunctionCall [Access]) |
-    ForeignExpression |
-    Infix |
-    Prefix |
-    Partial |
-    Operand |
-    SIGIDENTITY |
-    CUT |
-    TypeCast |
-    Operator
-CompositionOperation ::= REC | PAR | SEQ | MERGE | SPLIT
+DiagComposition ::= DiagCompositionImpl | '(' DiagCompositionImpl ')'
+private DiagCompositionImpl ::= (ExpressionElement [ Composition DiagComposition ])
 
-UIElement ::= UIElementButton |
-              UIElementSlider |
-              UIElementGroup |
-              Attach
+ExpressionElement ::=
+    ForeignExpression
+  | Infix
+  | Prefix
+  | Partial
+  | Operand
+  | SIGIDENTITY
+  | CUT
+  | (FunctionCall [Access])
+  | TypeCast
+  | Operator
+
+//TypeCast ::= (int | float) '(' Expression ')'
+TypeCast ::= int | float
+
+Composition ::=
+    REC
+  | PAR
+  | SEQ
+  | MERGE
+  | SPLIT
+
+UIElement ::=
+    UIElementButton
+  | UIElementSlider
+  | UIElementGroup
+  | Attach
 
 UIElementButton ::= (button | checkbox) '(' STRING ')'
 UIElementSlider ::= (hslider | vslider | nentry) '(' STRING ',' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER ')'
 UIElementGroup ::= (hgroup | vgroup | tgroup) '(' STRING ',' BlockDiagram ')'
 Attach ::= attach '(' Expression ',' Expression ')'
 
-TypeCast ::= int | float
-Infix ::= Operand Operator [Infix | Operand]
+// General infix syntax; handles chained infixes and parentheses
+//  Infix ::= Operand Operator (Infix | '(' Infix ')') | Operand
+//  Operand ::= IDENTIFIER | '(' Infix ')'
+//  Operator ::= '+'
+Infix ::= Operand Operator ((Infix | Partial) | '(' Infix ')') | Operand
 Prefix ::= Operator '(' Operand ',' Operand ')'
-Partial ::= Operator '(' Operand ')'
-Operand ::= (IDENTIFIER [Access]) | (['-']NUMBER) | UIElement | SIGIDENTITY
-Operator ::= ADD | SUB | MUL | POW | DIV | REM | MEM | DELAY1 | DELAY
+Partial ::= (Operator | TypeCast) '(' Operand ')'
+
+Operand ::= OperandImpl [Delay1*]
+Delay1 ::= DELAY1
+private OperandImpl ::=
+    (FunctionCall [Access])
+  | ([SUB] IDENTIFIER [Access])
+  | ([SUB] NUMBER)
+  | UIElement
+  | SIGIDENTITY
+  | '(' Infix ')'
+
+private Operator ::=
+    Math
+  | Delay
+  | Bitwise
+  | Comparator
+
+Bitwise ::=
+    AND
+  | OR
+  | XOR
+  | LSHIFT
+  | RSHIFT
+
+Delay ::= DELAY
+
+Math ::=
+    ADD
+  | SUB
+  | MUL
+  | POW
+  | DIV
+  | REM
+
+Comparator ::=
+    LESS
+  | LEQ
+  | MORE
+  | GEQ
+  | EQ
+  | NEQ
+
 FunctionCall ::= IDENTIFIER '(' ArgumentSeq ')'
 ArgumentSeq ::= Expression [ ',' ArgumentSeq ]
 Access ::= '.' (FunctionCall | IDENTIFIER)
