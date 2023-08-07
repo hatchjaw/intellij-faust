@@ -1,17 +1,17 @@
 {
-  parserClass="com.github.hatchjaw.faust.FaustParser"
-  parserUtilClass="com.github.hatchjaw.faust.FaustParserUtil"
+    parserClass="com.github.hatchjaw.faust.FaustParser"
+    parserUtilClass="com.github.hatchjaw.faust.FaustParserUtil"
 
-  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+    extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
-  psiClassPrefix="Faust"
-  psiImplClassSuffix="Impl"
-  psiPackage="com.github.hatchjaw.faust.psi"
-  psiImplPackage="com.github.hatchjaw.faust.psi.impl"
+    psiClassPrefix="Faust"
+    psiImplClassSuffix="Impl"
+    psiPackage="com.github.hatchjaw.faust.psi"
+    psiImplPackage="com.github.hatchjaw.faust.psi.impl"
 
-  elementTypeHolderClass="com.github.hatchjaw.faust.psi.FaustTypes"
-  elementTypeClass="com.github.hatchjaw.faust.psi.FaustElementType"
-  tokenTypeClass="com.github.hatchjaw.faust.psi.FaustTokenType"
+    elementTypeHolderClass="com.github.hatchjaw.faust.psi.FaustTypes"
+    elementTypeClass="com.github.hatchjaw.faust.psi.FaustElementType"
+    tokenTypeClass="com.github.hatchjaw.faust.psi.FaustTokenType"
 
     tokens = [
         WHITESPACE='regexp:\s+'
@@ -66,7 +66,16 @@
 Program ::= Root*
 private Root ::= !<<eof>> Statement //{pin=1}
 
-Statement ::= (FileImport | Declaration | Definition | FunctionDefinition) ';'
+Statement ::= ((FileImport | Declaration | Definition | FunctionDefinition) ';') | Documentation
+
+Documentation ::= <mdoc> (FreeText | Equation | Diagram | Metadata | Notice | Listing)* </mdoc>
+//private FreeText ::= 'regexp:[\w\\]*'
+private Equation ::= <equation> Expression </equation>
+private Diagram ::= <diagram> Expression </diagram>
+private Metadata ::= <metadata> Keyword </metadata>
+private Notice ::= <notice />
+private Listing ::= '<listing' ListingAttribute* '/>'
+private ListingAttribute ::= mdoctags|dependencies|distributed '=' ('"true"'|'"false"')
 
 FileImport ::= import '(' LIBFILE ')'
 
@@ -96,7 +105,7 @@ With ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
 DiagComposition ::= DiagCompositionImpl | '(' DiagCompositionImpl ')'
 private DiagCompositionImpl ::= (ExpressionElement [ Composition DiagComposition ])
 
-ExpressionElement ::=
+private ExpressionElement ::=
     ForeignExpression
   | Infix
   | Prefix
@@ -129,7 +138,9 @@ UIElementSlider ::= (hslider | vslider | nentry) '(' STRING ',' NUMBER ',' NUMBE
 UIElementGroup ::= (hgroup | vgroup | tgroup) '(' STRING ',' BlockDiagram ')'
 Attach ::= attach '(' Expression ',' Expression ')'
 
-// General infix syntax; handles chained infixes and parentheses
+// General infix syntax; handles chained infixes and parentheses, e.g.
+//  y = a + (b + c + (d + e) + (f) + (g + h + i));
+//
 //  Infix ::= Operand Operator (Infix | '(' Infix ')') | Operand
 //  Operand ::= IDENTIFIER | '(' Infix ')'
 //  Operator ::= '+'
@@ -143,15 +154,17 @@ private OperandImpl ::=
     (FunctionCall [Access])
   | ([SUB] IDENTIFIER [Access])
   | ([SUB] NUMBER)
+  | Partial
   | UIElement
   | SIGIDENTITY
-  | '(' Infix ')'
+  | '(' DiagComposition ')'
 
 private Operator ::=
     Math
   | Delay
   | Bitwise
   | Comparator
+//  | Composition
 
 Bitwise ::=
     AND
