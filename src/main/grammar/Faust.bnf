@@ -80,7 +80,7 @@ private ListingAttribute ::= mdoctags|dependencies|distributed '=' ('"true"'|'"f
 FileImport ::= [Variant*] import '(' LIBFILE ')'
 Variant ::= singleprecision | doubleprecision | quadprecision | fixedpointprecision
 
-Declaration ::= declare [IDENTIFIER] (name|author|copyright|version|license|description) STRING
+Declaration ::= declare [IDENTIFIER] (name|author|copyright|version|license|licence|description) STRING
 
 Definition ::= [Variant*] IDENTIFIER '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
 //private DefinitionRecover ::= !(';' | IDENTIFIER '=')
@@ -102,15 +102,15 @@ private DiagramExp ::= DiagComposition | DiagIteration // [With]
 //With ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
 
 DiagIteration ::= (par|seq|sum|prod) '(' IDENTIFIER ',' NumIter ',' DiagramExp ')'
-NumIter ::= NUMBER | IDENTIFIER | DiagComposition
+// TODO: This is suspect...
+NumIter ::= Infix
 
-DiagComposition ::= DiagCompositionImpl | '(' DiagCompositionImpl ')'
+DiagComposition ::= ( DiagCompositionImpl | '(' DiagCompositionImpl ')' ) ( WithExpression | LetrecExpression )*
 private DiagCompositionImpl ::= (ExpressionElement [ Composition DiagComposition ])
 
 // Environment Expressions
 private EnvExp ::=
-      DiagComposition (WithExpression|LetrecExpression)*
-    | Environment [Access]
+    Environment [Access]
     | Library
     | Component
     | ExplicitSubst
