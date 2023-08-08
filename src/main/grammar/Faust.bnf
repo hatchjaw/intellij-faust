@@ -180,15 +180,18 @@ private Operator ::=
     | Comparator
 
 Operand ::= OperandImpl [Delay1*]
-Delay1 ::= TIME_DELAY1
+// TODO: Make this less flaky.
 private OperandImpl ::=
       [MATH_SUB] (FunctionCall [Access])
-    | (IDENTIFIER [Access])
+    | IDENTIFIER [Access]
+    | [MATH_SUB] IDENTIFIER
     | [MATH_SUB] NUMBER
     | Partial
     | UIElement
     | SIG_IDENTITY
     | '(' DiagComposition ')'
+
+Delay1 ::= TIME_DELAY1
 
 Cut ::= SIG_CUT
 
