@@ -109,15 +109,14 @@ private DiagCompositionImpl ::= (ExpressionElement [ Composition DiagComposition
 
 // Environment Expressions
 private EnvExp ::=
-      WithExpression
-    | LetrecExpression
+      DiagComposition (WithExpression|LetrecExpression)*
     | Environment [Access]
     | Library
     | Component
     | ExplicitSubst
 
-WithExpression ::= DiagComposition with '{' ((Definition | FunctionDefinition) ';')* '}'
-LetrecExpression ::= DiagComposition letrec '{' DiffEquation* [where Definition*] '}'
+WithExpression ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
+LetrecExpression ::= letrec '{' DiffEquation* [where Definition*] '}'
 Library ::= library '(' LIBFILE ')'
 Component ::= component '(' DSPFILE ')'
 Environment ::= environment '{' ((Definition | FunctionDefinition) ';')* '}'
@@ -171,18 +170,7 @@ Attach ::= attach '(' Expression ',' Expression ')'
 //  Operator ::= '+'
 Infix ::= Operand Operator ((Infix | Partial) | '(' Infix ')') | Operand
 Prefix ::= Operator '(' Operand ',' Operand ')'
-Partial ::= (Operator | TypeCast) '(' Operand ')'
-
-Operand ::= OperandImpl [Delay1*]
-Delay1 ::= TIME_DELAY1
-private OperandImpl ::=
-      (FunctionCall [Access])
-    | ([MATH_SUB] IDENTIFIER [Access])
-    | ([MATH_SUB] NUMBER)
-    | Partial
-    | UIElement
-    | SIG_IDENTITY
-    | '(' DiagComposition ')'
+Partial ::= (Operator | TypeCast) '(' DiagramExp ')'
 
 private Operator ::=
       Cut
@@ -190,6 +178,17 @@ private Operator ::=
     | Delay
     | Bitwise
     | Comparator
+
+Operand ::= OperandImpl [Delay1*]
+Delay1 ::= TIME_DELAY1
+private OperandImpl ::=
+      [MATH_SUB] (FunctionCall [Access])
+    | (IDENTIFIER [Access])
+    | [MATH_SUB] NUMBER
+    | Partial
+    | UIElement
+    | SIG_IDENTITY
+    | '(' DiagComposition ')'
 
 Cut ::= SIG_CUT
 
@@ -220,7 +219,7 @@ Comparator ::=
 
 FunctionCall ::= IDENTIFIER '(' ArgumentSeq ')'
 ArgumentSeq ::= Expression [ ',' ArgumentSeq ]
-Access ::= '.' (FunctionCall | IDENTIFIER)
+Access ::= ('.' (FunctionCall | IDENTIFIER))*
 
 // Foreign Expressions
 private ForeignExpression ::= ForeignFunction // | ForeignVariable | ForeignConstant
