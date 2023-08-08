@@ -19,123 +19,148 @@
         BLOCK_COMMENT='regexp:/\*(\*(?!/)|[^*])*\*/'
         IDENTIFIER='regexp:\p{Alpha}\w*'
         LIBFILE='regexp:"\w+\.lib"'
-        LIBFILE_NOQUOTE='regexp:\w+\.lib'
+        DSPFILE='regexp:"\w+\.dsp"'
         CINCLUDE='regexp:(<\w+\.h>|"\w+\.h")'
         STRING='regexp:"([^\"\\]|\\.)*"'
+//        STRING_UNQUOTED='regexp:([^\"\\]|\\.)*'
         NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'
 
         // Composition operations
-        REC='~'
-        PAR=','
-        SEQ=':'
-        SPLIT='<:'
-        MERGE=':>'
+        COMPOSE_REC='~'
+        COMPOSE_PAR=','
+        COMPOSE_SEQ=':'
+        COMPOSE_SPLIT='<:'
+        COMPOSE_MERGE=':>'
 
         // Primitives
-        SIGIDENTITY='_'
-        CUT='!'
-        ADD='+'
-        SUB='-'
-        MUL='*'
-        POW='^'
-        DIV='/'
-        REM='%'
+        SIG_IDENTITY='_'
+        SIG_CUT='!'
 
-        // Bitwise Operators
-        OR='|'
-        AND='&'
-        XOR='xor'
-        LSHIFT='<<'
-        RSHIFT='>>'
+        MATH_ADD='+'
+        MATH_SUB='-'
+        MATH_MUL='*'
+        MATH_POW='^'
+        MATH_DIV='/'
+        MATH_REM='%'
 
-        // Comparators
-        LESS='<'
-        LEQ='<='
-        MORE='>'
-        GEQ='>='
-        EQ='=='
-        NEQ='!='
+        BIT_OR='|'
+        BIT_AND='&'
+        BIT_XOR='xor'
+        BIT_LSHIFT='<<'
+        BIT_RSHIFT='>>'
 
-        // Time
-        MEM='mem'
-        DELAY1="'"
-        DELAY='@'
+        COMPARE_LESS='<'
+        COMPARE_LEQ='<='
+        COMPARE_MORE='>'
+        COMPARE_GEQ='>='
+        COMPARE_EQ='=='
+        COMPARE_NEQ='!='
+
+        // TODO: fix mem (currently recognised as IDENTIFIER)
+        TIME_MEM='mem'
+        TIME_DELAY1="'"
+        TIME_DELAY='@'
     ]
 }
 
 Program ::= Root*
 private Root ::= !<<eof>> Statement //{pin=1}
 
-Statement ::= ((FileImport | Declaration | Definition | FunctionDefinition) ';') | Documentation
+private Statement ::= ((FileImport | Declaration | Definition | FunctionDefinition) ';') | Documentation
 
-Documentation ::= <mdoc> (FreeText | Equation | Diagram | Metadata | Notice | Listing)* </mdoc>
-//private FreeText ::= 'regexp:[\w\\]*'
-private Equation ::= <equation> Expression </equation>
-private Diagram ::= <diagram> Expression </diagram>
-private Metadata ::= <metadata> Keyword </metadata>
-private Notice ::= <notice />
+Documentation ::= '<mdoc>' (FreeText | Equation | Diagram | Metadata | Notice | Listing)* '</mdoc>'
+//private FreeText ::= STRING_UNQUOTED
+private Equation ::= '<equation>' Expression '</equation>'
+private Diagram ::= '<diagram>' Expression '</diagram>'
+private Metadata ::= '<metadata>' Keyword '</metadata>'
+private Notice ::= '<notice />'
 private Listing ::= '<listing' ListingAttribute* '/>'
 private ListingAttribute ::= mdoctags|dependencies|distributed '=' ('"true"'|'"false"')
 
-FileImport ::= import '(' LIBFILE ')'
+FileImport ::= [Variant*] import '(' LIBFILE ')'
+Variant ::= singleprecision | doubleprecision | quadprecision | fixedpointprecision
 
 Declaration ::= declare [IDENTIFIER] (name|author|copyright|version|license|description) STRING
 
-Definition ::= IDENTIFIER '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
+Definition ::= [Variant*] IDENTIFIER '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
 //private DefinitionRecover ::= !(';' | IDENTIFIER '=')
 
 // NB also supports pattern matching, e.g.
 //  duplicate(1,x) = x;
 //  duplicate(n,x) = x, duplicate(n-1,x);
-// The following should be supported too, but that'll need another rule.
-//  duplicate = case {
-//      (1,x) => x;
-//      (n,x) => x, duplicate(n-1,x);
-//  };
 FunctionDefinition ::= IDENTIFIER '(' ParameterSeq ')' '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
-ParameterSeq ::= (IDENTIFIER|NUMBER) [ ',' ParameterSeq ]
+ParameterSeq ::= ParameterSeqImpl | '(' ParameterSeqImpl ')'
+private ParameterSeqImpl ::= (IDENTIFIER|NUMBER) [ ',' ParameterSeq ]
 
-Expression ::= Library | Environment | DiagramExp | NUMBER
+private Expression ::=
+      EnvExp
+    | DiagramExp
+    | NUMBER
 
-Library ::= library '(' LIBFILE ')'
+// Diagram Expressions
+private DiagramExp ::= DiagComposition | DiagIteration // [With]
+//With ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
 
-DiagramExp ::= DiagComposition [With] // | DiagIteration
-With ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
+DiagIteration ::= (par|seq|sum|prod) '(' IDENTIFIER ',' NumIter ',' DiagramExp ')'
+NumIter ::= NUMBER | IDENTIFIER | DiagComposition
 
 DiagComposition ::= DiagCompositionImpl | '(' DiagCompositionImpl ')'
 private DiagCompositionImpl ::= (ExpressionElement [ Composition DiagComposition ])
 
+// Environment Expressions
+private EnvExp ::=
+      WithExpression
+    | LetrecExpression
+    | Environment [Access]
+    | Library
+    | Component
+    | ExplicitSubst
+
+WithExpression ::= DiagComposition with '{' ((Definition | FunctionDefinition) ';')* '}'
+LetrecExpression ::= DiagComposition letrec '{' DiffEquation* [where Definition*] '}'
+Library ::= library '(' LIBFILE ')'
+Component ::= component '(' DSPFILE ')'
+Environment ::= environment '{' ((Definition | FunctionDefinition) ';')* '}'
+
 private ExpressionElement ::=
-    ForeignExpression
-  | Infix
-  | Prefix
-  | Partial
-  | Operand
-  | SIGIDENTITY
-  | CUT
-  | (FunctionCall [Access])
-  | TypeCast
-  | Operator
+      DiagIteration
+    | ForeignExpression
+    | ProgExp
+    | Infix
+    | Prefix
+    | Partial
+    | Operand
+    | (FunctionCall [Access])
+    | TypeCast
+    | Operator
+
+DiffEquation ::= "'" IDENTIFIER '=' Expression ';'
+
+ProgExp ::= Abstraction //| Application
+Abstraction ::= LambdaAbstraction | PatternAbstraction
+LambdaAbstraction ::= '\' '(' ParameterSeq ')' '.' '(' DiagComposition ')'
+PatternAbstraction ::= case '{' Rule* '}'
+Rule ::= '(' ParameterSeq ')' '=>' DiagComposition ';'
 
 //TypeCast ::= (int | float) '(' Expression ')'
 TypeCast ::= int | float
 
 Composition ::=
-    REC
-  | PAR
-  | SEQ
-  | MERGE
-  | SPLIT
+      COMPOSE_REC
+    | COMPOSE_PAR
+    | COMPOSE_SEQ
+    | COMPOSE_MERGE
+    | COMPOSE_SPLIT
 
 UIElement ::=
-    UIElementButton
-  | UIElementSlider
-  | UIElementGroup
-  | Attach
+      UIElementButton
+    | UIElementSlider
+    | UIElementGroup
+    | Attach
 
 UIElementButton ::= (button | checkbox) '(' STRING ')'
 UIElementSlider ::= (hslider | vslider | nentry) '(' STRING ',' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER ')'
-UIElementGroup ::= (hgroup | vgroup | tgroup) '(' STRING ',' BlockDiagram ')'
+UIElementGroup ::= (hgroup | vgroup | tgroup) '(' STRING ',' DiagComposition ')'
 Attach ::= attach '(' Expression ',' Expression ')'
 
 // General infix syntax; handles chained infixes and parentheses, e.g.
@@ -149,55 +174,56 @@ Prefix ::= Operator '(' Operand ',' Operand ')'
 Partial ::= (Operator | TypeCast) '(' Operand ')'
 
 Operand ::= OperandImpl [Delay1*]
-Delay1 ::= DELAY1
+Delay1 ::= TIME_DELAY1
 private OperandImpl ::=
-    (FunctionCall [Access])
-  | ([SUB] IDENTIFIER [Access])
-  | ([SUB] NUMBER)
-  | Partial
-  | UIElement
-  | SIGIDENTITY
-  | '(' DiagComposition ')'
+      (FunctionCall [Access])
+    | ([MATH_SUB] IDENTIFIER [Access])
+    | ([MATH_SUB] NUMBER)
+    | Partial
+    | UIElement
+    | SIG_IDENTITY
+    | '(' DiagComposition ')'
 
 private Operator ::=
-    Math
-  | Delay
-  | Bitwise
-  | Comparator
-//  | Composition
+      Cut
+    | Math
+    | Delay
+    | Bitwise
+    | Comparator
+
+Cut ::= SIG_CUT
 
 Bitwise ::=
-    AND
-  | OR
-  | XOR
-  | LSHIFT
-  | RSHIFT
+      BIT_AND
+    | BIT_OR
+    | BIT_XOR
+    | BIT_LSHIFT
+    | BIT_RSHIFT
 
-Delay ::= DELAY
+Delay ::= TIME_DELAY | MEM
 
 Math ::=
-    ADD
-  | SUB
-  | MUL
-  | POW
-  | DIV
-  | REM
+      MATH_ADD
+    | MATH_SUB
+    | MATH_MUL
+    | MATH_POW
+    | MATH_DIV
+    | MATH_REM
 
 Comparator ::=
-    LESS
-  | LEQ
-  | MORE
-  | GEQ
-  | EQ
-  | NEQ
+      COMPARE_LESS
+    | COMPARE_LEQ
+    | COMPARE_MORE
+    | COMPARE_GEQ
+    | COMPARE_EQ
+    | COMPARE_NEQ
 
 FunctionCall ::= IDENTIFIER '(' ArgumentSeq ')'
 ArgumentSeq ::= Expression [ ',' ArgumentSeq ]
 Access ::= '.' (FunctionCall | IDENTIFIER)
 
-Environment ::= environment '{' ((Definition | FunctionDefinition) ';')* '}'
-
-ForeignExpression ::= ForeignFunction // | ForeignVariable | ForeignConstant
+// Foreign Expressions
+private ForeignExpression ::= ForeignFunction // | ForeignVariable | ForeignConstant
 ForeignFunction ::= ffunction '(' Signature ',' CINCLUDE ',' ('""' | LIBFILE) ')'
 Signature ::= Type FunNames '(' [ArgTypes] ')'
 Type ::= int | float
