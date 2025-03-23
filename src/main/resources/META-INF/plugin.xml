@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.hatchjaw.intellijfaust</id>
+    <id>com.github.hatchjaw.faust</id>
     <name>Faust Support</name>
     <vendor>hatchjaw</vendor>
 
@@ -9,16 +9,19 @@
     <resource-bundle>messages.FaustBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.hatchjaw.intellijfaust.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <toolWindow factoryClass="com.github.hatchjaw.faust.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
 
         <fileType name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
-                  implementationClass="com.github.hatchjaw.intellijfaust.FaustDSPFileType"/>
+                  implementationClass="com.github.hatchjaw.faust.FaustDSPFileType"/>
         <fileType name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
-                  implementationClass="com.github.hatchjaw.intellijfaust.FaustLibFileType"/>
+                  implementationClass="com.github.hatchjaw.faust.FaustLibFileType"/>
+
+        <lang.parserDefinition language="Faust"
+                               implementationClass="com.github.hatchjaw.faust.FaustParserDefinition"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.hatchjaw.intellijfaust.listeners.MyApplicationActivationListener"
+        <listener class="com.github.hatchjaw.faust.listeners.MyApplicationActivationListener"
                   topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 </idea-plugin>

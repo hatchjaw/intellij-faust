@@ -16,12 +16,12 @@
     tokens = [
         WHITESPACE='regexp:\s+'
         LINE_COMMENT='regexp://.*'
-        BLOCK_COMMENT='regexp:/\*(\*(?!/)|[^*])*\*/'
+//        BLOCK_COMMENT='regexp:/\*(\*(?!/)|[^*])*\*/'
         IDENTIFIER='regexp:\p{Alpha}\w*'
         LIBFILE='regexp:"\w+\.lib"'
         DSPFILE='regexp:"\w+\.dsp"'
         CINCLUDE='regexp:(<\w+\.h>|"\w+\.h")'
-        STRING='regexp:"([^\"\\]|\\.)*"'
+//        STRING='regexp:"([^\"\\]|\\.)*"'
 //        STRING_UNQUOTED='regexp:([^\"\\]|\\.)*'
         NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'
 
@@ -96,6 +96,7 @@ private Expression ::=
       EnvExp
     | DiagramExp
     | NUMBER
+    | Operator
 
 // Diagram Expressions
 private DiagramExp ::= DiagComposition | DiagIteration // [With]
@@ -106,20 +107,20 @@ DiagIteration ::= (par|seq|sum|prod) '(' IDENTIFIER ',' NumIter ',' DiagramExp '
 NumIter ::= Infix
 
 DiagComposition ::= ( DiagCompositionImpl | '(' DiagCompositionImpl ')' ) ( WithExpression | LetrecExpression )*
-private DiagCompositionImpl ::= (ExpressionElement [ Composition DiagComposition ])
+private DiagCompositionImpl ::= ExpressionElement [ Composition DiagComposition ]
 
 // Environment Expressions
 private EnvExp ::=
-    Environment [Access]
-    | Library
-    | Component
+    EnvironmentExpr [Access]
+    | LibraryExpr
+    | ComponentExpr
     | ExplicitSubst
 
 WithExpression ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
 LetrecExpression ::= letrec '{' DiffEquation* [where Definition*] '}'
-Library ::= library '(' LIBFILE ')'
-Component ::= component '(' DSPFILE ')'
-Environment ::= environment '{' ((Definition | FunctionDefinition) ';')* '}'
+LibraryExpr ::= library '(' LIBFILE ')'
+ComponentExpr ::= component '(' DSPFILE ')'
+EnvironmentExpr ::= environment '{' ((Definition | FunctionDefinition) ';')* '}'
 
 private ExpressionElement ::=
       DiagIteration
@@ -129,9 +130,22 @@ private ExpressionElement ::=
     | Prefix
     | Partial
     | Operand
-    | (FunctionCall [Access])
+    | FunctionCall [Access]
     | TypeCast
-    | Operator
+    | Operator Operator*
+    | Primitive
+
+private Primitive ::=
+      RouteExpr
+    | WaveformExpr
+//    | SoundFile
+//    | CPrimitive
+//    | MathPrimitive
+//    | DelayAndTables
+//    | UIElements
+
+RouteExpr ::= route '(' ParameterSeq ')'
+WaveformExpr ::= waveform '{' NUMBER (',' NUMBER)* '}'
 
 DiffEquation ::= "'" IDENTIFIER '=' Expression ';'
 
@@ -155,12 +169,14 @@ UIElement ::=
       UIElementButton
     | UIElementSlider
     | UIElementGroup
-    | Attach
+    | UIElementGraph
+    | AttachExpr
 
 UIElementButton ::= (button | checkbox) '(' STRING ')'
-UIElementSlider ::= (hslider | vslider | nentry) '(' STRING ',' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER ')'
+UIElementSlider ::= (hslider | vslider | nentry) '(' STRING ',' ArgumentSeq ')' //Expression ',' Expression ',' Expression ',' Expression ')'
 UIElementGroup ::= (hgroup | vgroup | tgroup) '(' STRING ',' DiagComposition ')'
-Attach ::= attach '(' Expression ',' Expression ')'
+UIElementGraph ::= (hbargraph | vbargraph) '(' STRING ',' ArgumentSeq ')' //Expression ',' Expression ')'
+AttachExpr ::= attach '(' Expression ',' Expression ')'
 
 // General infix syntax; handles chained infixes and parentheses, e.g.
 //  y = a + (b + c + (d + e) + (f) + (g + h + i));
@@ -168,7 +184,7 @@ Attach ::= attach '(' Expression ',' Expression ')'
 //  Infix ::= Operand Operator (Infix | '(' Infix ')') | Operand
 //  Operand ::= IDENTIFIER | '(' Infix ')'
 //  Operator ::= '+'
-Infix ::= Operand Operator ((Infix | Partial) | '(' Infix ')') | Operand
+Infix ::= (Operand | Operator) Operator ((Infix | Partial) | '(' Infix ')') | Operand
 Prefix ::= Operator '(' Operand ',' Operand ')'
 Partial ::= (Operator | TypeCast) '(' DiagramExp ')'
 
@@ -185,7 +201,7 @@ private OperandImpl ::=
       [MATH_SUB] (FunctionCall [Access])
     | IDENTIFIER [Access]
     | [MATH_SUB] IDENTIFIER
-    | [MATH_SUB] NUMBER
+    | [MATH_SUB | MATH_ADD] NUMBER
     | Partial
     | UIElement
     | SIG_IDENTITY
