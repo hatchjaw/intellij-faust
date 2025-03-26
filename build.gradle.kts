@@ -1,5 +1,6 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -11,7 +12,7 @@ plugins {
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
-//    id("org.jetbrains.grammarkit")
+    id("org.jetbrains.grammarkit") version "2022.3.2.2"
 }
 
 group = properties("pluginGroup").get()
@@ -75,6 +76,25 @@ koverReport {
 }
 
 tasks {
+    generateLexer {
+        sourceFile.set(file("./src/main/grammar/_FaustLexer.flex"))
+        targetOutputDir.set(file("./src/main/gen/com/github/hatchjaw/faust"))
+        purgeOldFiles.set(false)
+        dependsOn(generateParser)
+    }
+
+    generateParser {
+        sourceFile.set(file("./src/main/grammar/Faust.bnf"))
+        targetRootOutputDir.set(file("./src/main/gen"))
+        pathToParser.set("FaustParser.java")
+        pathToPsiRoot.set("psi")
+        purgeOldFiles.set(true)
+    }
+
+    withType<KotlinCompile> {
+        dependsOn(generateParser, generateLexer)
+    }
+
     wrapper {
         gradleVersion = properties("gradleVersion").get()
     }

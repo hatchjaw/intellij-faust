@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface FaustDeclaration extends PsiElement {
 
-  @Nullable
-  PsiElement getIdentifier();
+  @NotNull
+  List<FaustName> getNameList();
+
+  @NotNull
+  FaustString getString();
 
 }

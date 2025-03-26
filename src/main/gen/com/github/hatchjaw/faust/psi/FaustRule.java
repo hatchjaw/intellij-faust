@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface FaustRule extends PsiElement {
 
   @NotNull
-  FaustDiagComposition getDiagComposition();
+  FaustArgList getArgList();
 
   @NotNull
-  FaustParameterSeq getParameterSeq();
+  FaustExpression getExpression();
 
 }

@@ -13,238 +13,404 @@
     elementTypeClass="com.github.hatchjaw.faust.psi.FaustElementType"
     tokenTypeClass="com.github.hatchjaw.faust.psi.FaustTokenType"
 
+    extends(".+(Expr|Comp)")=Expression
+    extends(".+Ifx")=Infix
+    extends(".+Arg")=Argument
+
     tokens = [
-        WHITESPACE='regexp:\s+'
-        LINE_COMMENT='regexp://.*'
-//        BLOCK_COMMENT='regexp:/\*(\*(?!/)|[^*])*\*/'
-        IDENTIFIER='regexp:\p{Alpha}\w*'
-        LIBFILE='regexp:"\w+\.lib"'
-        DSPFILE='regexp:"\w+\.dsp"'
-        CINCLUDE='regexp:(<\w+\.h>|"\w+\.h")'
-//        STRING='regexp:"([^\"\\]|\\.)*"'
-//        STRING_UNQUOTED='regexp:([^\"\\]|\\.)*'
+        PAR=','
+        SEQ=':'
+        MERGE=':>'
+        SPLIT='<:'
+        REC='~'
+
+        ADD='+'
+        SUB='-'
+        MUL='*'
+        DIV='/'
+        MOD='%'
+        DELAY='@'
+        DELAY1="'"
+
+        AND='&'
+        OR='|'
+        XOR='xor'
+
+        LSH='<<'
+        RSH='>>'
+
+        LT='<'
+        LE='<='
+        GT='>'
+        GE='>='
+        EQ='=='
+        NE='!='
+
+        WIRE='_'
+        CUT='!'
+
+        ENDDEF=';'
+        DEF='='
+        LPAREN='('
+        RPAREN=')'
+        LBRACE='{'
+        RBRACE='}'
+        LBRACK='['
+        RBRACK=']'
+
+        LAMBDA='\'
+        DOT='.'
+        WITH='with'
+        LETREC='letrec'
+        WHERE='where'
+
+        MEM='mem'
+        PRFIX='prefix'
+
+        INTCAST='int'
+        FLOATCAST='float'
+        NOTYPECAST='any'
+
+        RDTBL='rdtable'
+        RWTBL='rwtable'
+
+        SELECT2='select2'
+        SELECT3='select3'
+
+        FFUNCTION='ffunction'
+        FCONSTANT='fconstant'
+        FVARIABLE='fvariable'
+
+        BUTTON='button'
+        CHECKBOX='checkbox'
+        VSLIDER='vslider'
+        HSLIDER='hslider'
+        NENTRY='nentry'
+        VGROUP='vgroup'
+        HGROUP='hgroup'
+        TGROUP='tgroup'
+        VBARGRAPH='vbargraph'
+        HBARGRAPH='hbargraph'
+        SOUNDFILE='soundfile'
+
+        ATTACH='attach'
+        MODULATE='minput'
+
+        ACOS='acos'
+        ASIN='asin'
+        ATAN='atan'
+        ATAN2='atan2'
+
+        COS='cos'
+        SIN='sin'
+        TAN='tan'
+
+        EXP='exp'
+        LOG='log'
+        LOG10='log10'
+        POWOP='^'
+        POWFUN='pow'
+        SQRT='sqrt'
+
+        ABS='abs'
+        MIN='min'
+        MAX='max'
+
+        FMOD='fmod'
+        REMAINDER='remainder'
+
+        FLOOR='floor'
+        CEIL='ceil'
+        RINT='rint'
+        ROUND='round'
+
+        ISEQ='seq'
+        IPAR='par'
+        ISUM='sum'
+        IPROD='prod'
+
+        INS='inputs'
+        OUTS='outputs'
+
+        IMPORT='import'
+        COMPONENT='component'
+        LIBRARY='library'
+        ENVIRONMENT='environment'
+
+        WAVEFORM='waveform'
+        ROUTE='route'
+        ENABLE='enable'
+        CONTROL='control'
+
+        DECLARE='declare'
+
+        CASE='case'
+        ARROW='=>'
+        LAPPLY='->'
+
+        ASSERTBOUNDS='assertbounds'
+        LOWEST='lowest'
+        HIGHEST='highest'
+
+        FLOATMODE='singleprecision'
+        DOUBLEMODE='doubleprecision'
+        QUADMODE='quadprecision'
+        FIXEDPOINTMODE='fixedpointprecision'
+
+        WHITE_SPACE='regexp:[ \t\r\n]+'
+        IDENTIFIER='regexp:(::)?_*[a-zA-Z]\w*(::_*[a-zA-Z]\w*)*'
+        STRING_LITERAL="regexp:\"[^\"]*\""
+        LINE_COMMENT='regexp://[^\r\n]*'
+        BLOCK_COMMENT="regexp:/\*(([^*]|[\r\n])*(\*+[^*/])?)*(\*+/)?"
         NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'
-
-        // Composition operations
-        COMPOSE_REC='~'
-        COMPOSE_PAR=','
-        COMPOSE_SEQ=':'
-        COMPOSE_SPLIT='<:'
-        COMPOSE_MERGE=':>'
-
-        // Primitives
-        SIG_IDENTITY='_'
-        SIG_CUT='!'
-
-        MATH_ADD='+'
-        MATH_SUB='-'
-        MATH_MUL='*'
-        MATH_POW='^'
-        MATH_DIV='/'
-        MATH_REM='%'
-
-        BIT_OR='|'
-        BIT_AND='&'
-        BIT_XOR='xor'
-        BIT_LSHIFT='<<'
-        BIT_RSHIFT='>>'
-
-        COMPARE_LESS='<'
-        COMPARE_LEQ='<='
-        COMPARE_MORE='>'
-        COMPARE_GEQ='>='
-        COMPARE_EQ='=='
-        COMPARE_NEQ='!='
-
-        // TODO: fix mem (currently recognised as IDENTIFIER)
-        TIME_MEM='mem'
-        TIME_DELAY1="'"
-        TIME_DELAY='@'
     ]
 }
 
-Program ::= Root*
-private Root ::= !<<eof>> Statement //{pin=1}
+Program ::= !<<eof>> StmtList
 
-private Statement ::= ((FileImport | Declaration | Definition | FunctionDefinition) ';') | Documentation
+private StmtList ::= (VariantList Statement)*
 
-Documentation ::= '<mdoc>' (FreeText | Equation | Diagram | Metadata | Notice | Listing)* '</mdoc>'
-//private FreeText ::= STRING_UNQUOTED
-private Equation ::= '<equation>' Expression '</equation>'
-private Diagram ::= '<diagram>' Expression '</diagram>'
-private Metadata ::= '<metadata>' Keyword '</metadata>'
-private Notice ::= '<notice />'
-private Listing ::= '<listing' ListingAttribute* '/>'
-private ListingAttribute ::= mdoctags|dependencies|distributed '=' ('"true"'|'"false"')
+private DefList ::= (VariantList Definition)*
 
-FileImport ::= [Variant*] import '(' LIBFILE ')'
-Variant ::= singleprecision | doubleprecision | quadprecision | fixedpointprecision
+private VariantList ::= Variant*
 
-Declaration ::= declare [IDENTIFIER] (name|author|copyright|version|license|licence|description) STRING
+private RecList ::= RecDefinition*
 
-Definition ::= [Variant*] IDENTIFIER '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
-//private DefinitionRecover ::= !(';' | IDENTIFIER '=')
+Variant ::=
+      FLOATMODE
+    | DOUBLEMODE
+    | QUADMODE
+    | FIXEDPOINTMODE
 
-// NB also supports pattern matching, e.g.
-//  duplicate(1,x) = x;
-//  duplicate(n,x) = x, duplicate(n-1,x);
-FunctionDefinition ::= IDENTIFIER '(' ParameterSeq ')' '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
-ParameterSeq ::= ParameterSeqImpl | '(' ParameterSeqImpl ')'
-private ParameterSeqImpl ::= (IDENTIFIER|NUMBER) [ ',' ParameterSeq ]
+private Statement ::=
+      FileImport
+    | Declaration
+    | Definition
+//    | BDOC Doc EDOC
 
-private Expression ::=
-      EnvExp
-    | DiagramExp
-    | NUMBER
-    | Operator
+FileImport ::= IMPORT LPAREN UqString RPAREN ENDDEF
 
-// Diagram Expressions
-private DiagramExp ::= DiagComposition | DiagIteration // [With]
-//With ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
+Declaration ::=
+      DECLARE Name String ENDDEF
+    | DECLARE Name Name String ENDDEF
 
-DiagIteration ::= (par|seq|sum|prod) '(' IDENTIFIER ',' NumIter ',' DiagramExp ')'
-// TODO: This is suspect...
-NumIter ::= Infix
+Definition ::=
+      DefName LPAREN ArgList RPAREN DEF Expression ENDDEF
+    | DefName DEF Expression ENDDEF
+//    | Error ENDDEF
 
-DiagComposition ::= ( DiagCompositionImpl | '(' DiagCompositionImpl ')' ) ( WithExpression | LetrecExpression )*
-private DiagCompositionImpl ::= ExpressionElement [ Composition DiagComposition ]
+RecDefinition ::=
+      RecName DEF Expression ENDDEF
+//    | Error ENDDEF
 
-// Environment Expressions
-private EnvExp ::=
-    EnvironmentExpr [Access]
-    | LibraryExpr
-    | ComponentExpr
-    | ExplicitSubst
+DefName ::= Ident
 
-WithExpression ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
-LetrecExpression ::= letrec '{' DiffEquation* [where Definition*] '}'
-LibraryExpr ::= library '(' LIBFILE ')'
-ComponentExpr ::= component '(' DSPFILE ')'
-EnvironmentExpr ::= environment '{' ((Definition | FunctionDefinition) ';')* '}'
+RecName ::= DELAY1 IDENTIFIER
 
-private ExpressionElement ::=
-      DiagIteration
-    | ForeignExpression
-    | ProgExp
-    | Infix
-    | Prefix
-    | Partial
-    | Operand
-    | FunctionCall [Access]
-    | TypeCast
-    | Operator Operator*
-    | Primitive
+Params ::= (IDENTIFIER PAR)* IDENTIFIER
 
-private Primitive ::=
-      RouteExpr
-    | WaveformExpr
-//    | SoundFile
-//    | CPrimitive
-//    | MathPrimitive
-//    | DelayAndTables
-//    | UIElements
+Expression ::=
+      WithExpr
+    | LetrecExpr
+    | LetrecDefListExpr
+    | SequentialComp
+    | ParallelComp
+    | SplitComp
+    | MergeComp
+    | RecursiveComp
+    | InfixExpr
 
-RouteExpr ::= route '(' ParameterSeq ')'
-WaveformExpr ::= waveform '{' NUMBER (',' NUMBER)* '}'
+WithExpr ::= Expression WITH LBRACE DefList RBRACE
+LetrecExpr ::= Expression LETREC LBRACE RecList RBRACE
+LetrecDefListExpr ::= Expression LETREC LBRACE RecList WHERE DefList RBRACE
+ParallelComp ::= Expression PAR Expression
+SequentialComp ::= Expression SEQ Expression
+SplitComp ::= Expression SPLIT Expression
+MergeComp ::= Expression MERGE Expression
+RecursiveComp ::= Expression REC Expression
+InfixExpr ::= Infix
 
-DiffEquation ::= "'" IDENTIFIER '=' Expression ';'
+Infix ::=
+      AddIfx
+    | SubIfx
+    | MulIfx
+    | DivIfx
+    | ModIfx
+    | PowIfx
+    | DelayIfx
+    | Delay1Ifx
+    | AccessIfx
+    | AndIfx
+    | OrIfx
+    | XorIfx
+    | LshIfx
+    | RshIfx
+    | LtIfx
+    | LeIfx
+    | GtIfx
+    | GeIfx
+    | EqIfx
+    | NeIfx
+    | ParenIfx
+    | BrackIfx
+    | PrimitiveIfx
 
-ProgExp ::= Abstraction //| Application
-Abstraction ::= LambdaAbstraction | PatternAbstraction
-LambdaAbstraction ::= '\' '(' ParameterSeq ')' '.' '(' DiagComposition ')'
-PatternAbstraction ::= case '{' Rule* '}'
-Rule ::= '(' ParameterSeq ')' '=>' DiagComposition ';'
+AddIfx ::= Infix ADD Infix
+SubIfx ::= Infix SUB Infix
+MulIfx ::= Infix MUL Infix
+DivIfx ::= Infix DIV Infix
+ModIfx ::= Infix MOD Infix
+PowIfx ::= Infix POWOP Infix
+DelayIfx ::= Infix DELAY Infix
+Delay1Ifx::= Infix DELAY1
+AccessIfx ::= Infix DOT IDENTIFIER
+AndIfx ::= Infix AND Infix
+OrIfx ::= Infix OR Infix
+XorIfx ::= Infix XOR Infix
+LshIfx ::= Infix LSH Infix
+RshIfx ::= Infix RSH Infix
+LtIfx ::= Infix LT Infix
+LeIfx ::= Infix LE Infix
+GtIfx ::= Infix GT Infix
+GeIfx ::= Infix GE Infix
+EqIfx ::= Infix EQ Infix
+NeIfx ::= Infix NE Infix
+ParenIfx ::= Infix LPAREN ArgList RPAREN
+BrackIfx ::= Infix LBRACK DefList RBRACK
 
-//TypeCast ::= (int | float) '(' Expression ')'
-TypeCast ::= int | float
+PrimitiveIfx ::=
+      NUMBER
+    | ADD NUMBER
+    | SUB NUMBER
+    | WIRE
+    | CUT
+    | MEM
+    | PREFIX
+    | ADD
+    | SUB
+    | MUL
+    | DIV
+    | MOD
+    | DELAY
+    | AND
+    | OR
+    | XOR
+    | LSH
+    | RSH
+    | LT
+    | LE
+    | GT
+    | GE
+    | EQ
+    | NE
+    | ATTACH
+    | ENABLE
+    | CONTROL
+    | ACOS
+    | ASIN
+    | ATAN
+    | ATAN2
+    | COS
+    | SIN
+    | TAN
+    | EXP
+    | LOG
+    | LOG10
+    | POWOP
+    | POWFUN
+    | SQRT
+    | ABS
+    | MIN
+    | MAX
+    | FMOD
+    | REMAINDER
+    | FLOOR
+    | CEIL
+    | RINT
+    | ROUND
+    | RDTBL
+    | RWTBL
+    | SELECT2
+    | SELECT3
+    | ASSERTBOUNDS
+    | LOWEST
+    | HIGHEST
+    | IDENTIFIER
+    | SUB IDENTIFIER
+    | LPAREN Expression RPAREN
+    | LambdaAbstraction
+//    | LBRACK ModList LAPPLY Expression RBRACK
+    | CASE LBRACE RuleList RBRACE
+//    | ForeignFunction
+//    | ForeignConstant
+//    | ForeignVariable
+    | COMPONENT LPAREN UqString RPAREN
+    | LIBRARY LPAREN UqString RPAREN
+    | ENVIRONMENT LBRACE StmtList RBRACE
+//    | WAVEFORM LBRACE ValList RBRACE
+    | ROUTE LPAREN Argument PAR Argument RPAREN // Fake route?
+    | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
+    | UiButton
+    | UiCheckbox
+    | UiVslider
+    | UiHslider
+    | UiNentry
+    | UiVgroup
+    | UiHgroup
+    | UiTgroup
+    | UiVbargraph
+    | UiHbargraph
+    | SoundfilePrim
+    | IterPar
+    | IterSeq
+    | IterSum
+    | IterProd
+    | Inputs
+    | Outputs
 
-Composition ::=
-      COMPOSE_REC
-    | COMPOSE_PAR
-    | COMPOSE_SEQ
-    | COMPOSE_MERGE
-    | COMPOSE_SPLIT
+LambdaAbstraction ::= LAMBDA LPAREN Params RPAREN DOT LPAREN Expression RPAREN
 
-UIElement ::=
-      UIElementButton
-    | UIElementSlider
-    | UIElementGroup
-    | UIElementGraph
-    | AttachExpr
+Ident ::= IDENTIFIER
 
-UIElementButton ::= (button | checkbox) '(' STRING ')'
-UIElementSlider ::= (hslider | vslider | nentry) '(' STRING ',' ArgumentSeq ')' //Expression ',' Expression ',' Expression ',' Expression ')'
-UIElementGroup ::= (hgroup | vgroup | tgroup) '(' STRING ',' DiagComposition ')'
-UIElementGraph ::= (hbargraph | vbargraph) '(' STRING ',' ArgumentSeq ')' //Expression ',' Expression ')'
-AttachExpr ::= attach '(' Expression ',' Expression ')'
+Name ::= IDENTIFIER
 
-// General infix syntax; handles chained infixes and parentheses, e.g.
-//  y = a + (b + c + (d + e) + (f) + (g + h + i));
-//
-//  Infix ::= Operand Operator (Infix | '(' Infix ')') | Operand
-//  Operand ::= IDENTIFIER | '(' Infix ')'
-//  Operator ::= '+'
-Infix ::= (Operand | Operator) Operator ((Infix | Partial) | '(' Infix ')') | Operand
-Prefix ::= Operator '(' Operand ',' Operand ')'
-Partial ::= (Operator | TypeCast) '(' DiagramExp ')'
+ArgList ::= (Argument PAR)* Argument
 
-private Operator ::=
-      Cut
-    | Math
-    | Delay
-    | Bitwise
-    | Comparator
+Argument ::=
+      SeqArg
+    | SplitArg
+    | MergeArg
+    | RecArg
+    | InfixArg
 
-Operand ::= OperandImpl [Delay1*]
-// TODO: Make this less flaky.
-private OperandImpl ::=
-      [MATH_SUB] (FunctionCall [Access])
-    | IDENTIFIER [Access]
-    | [MATH_SUB] IDENTIFIER
-    | [MATH_SUB | MATH_ADD] NUMBER
-    | Partial
-    | UIElement
-    | SIG_IDENTITY
-    | '(' DiagComposition ')'
+SeqArg ::= Argument SEQ Argument
+SplitArg ::= Argument SPLIT Argument
+MergeArg ::= Argument MERGE Argument
+RecArg ::= Argument REC Argument
+InfixArg ::= Infix
 
-Delay1 ::= TIME_DELAY1
+String ::= STRING_LITERAL
 
-Cut ::= SIG_CUT
+UqString ::= STRING_LITERAL
 
-Bitwise ::=
-      BIT_AND
-    | BIT_OR
-    | BIT_XOR
-    | BIT_LSHIFT
-    | BIT_RSHIFT
+IterPar ::= IPAR LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+IterSeq ::= ISEQ LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+IterSum ::= ISUM LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+IterProd ::= IPROD LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
 
-Delay ::= TIME_DELAY | MEM
+Inputs ::= INS LPAREN Expression RPAREN
+Outputs ::= OUTS LPAREN Expression RPAREN
+UiButton ::= BUTTON LPAREN UqString RPAREN
+UiCheckbox ::= LPAREN UqString RPAREN
+UiVslider ::= VSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
+UiHslider ::= HSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
+UiNentry ::= NENTRY LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
+UiVgroup ::= VGROUP LPAREN UqString PAR Expression RPAREN
+UiHgroup ::= HGROUP LPAREN UqString PAR Expression RPAREN
+UiTgroup ::= TGROUP LPAREN UqString PAR Expression RPAREN
+UiVbargraph ::= VBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN
+UiHbargraph ::= HBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN
+SoundfilePrim ::= SOUNDFILE LPAREN UqString PAR Argument RPAREN
 
-Math ::=
-      MATH_ADD
-    | MATH_SUB
-    | MATH_MUL
-    | MATH_POW
-    | MATH_DIV
-    | MATH_REM
-
-Comparator ::=
-      COMPARE_LESS
-    | COMPARE_LEQ
-    | COMPARE_MORE
-    | COMPARE_GEQ
-    | COMPARE_EQ
-    | COMPARE_NEQ
-
-FunctionCall ::= IDENTIFIER '(' ArgumentSeq ')'
-ArgumentSeq ::= Expression [ ',' ArgumentSeq ]
-Access ::= ('.' (FunctionCall | IDENTIFIER))*
-
-// Foreign Expressions
-private ForeignExpression ::= ForeignFunction // | ForeignVariable | ForeignConstant
-ForeignFunction ::= ffunction '(' Signature ',' CINCLUDE ',' ('""' | LIBFILE) ')'
-Signature ::= Type FunNames '(' [ArgTypes] ')'
-Type ::= int | float
-FunNames ::= IDENTIFIER [ '|' FunNames]
-ArgTypes ::= ArgType [',' ArgTypes]
-ArgType ::= Type | any
+RuleList ::= Rule*
+Rule ::= LPAREN ArgList RPAREN ARROW Expression ENDDEF

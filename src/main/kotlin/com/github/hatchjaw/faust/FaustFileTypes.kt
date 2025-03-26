@@ -8,6 +8,7 @@ object FaustDSPFileType : LanguageFileType(FaustLanguage.INSTANCE) {
     override fun getDescription(): String = FaustBundle.message("faust.dsp.file.type.description")
     override fun getDefaultExtension(): String = "dsp"
     override fun getIcon(): Icon = FaustIcons.FaustDSP
+    override fun getDisplayName(): String = FaustBundle.message("faust.dsp.file.type.display.name")
 }
 
 object FaustLibFileType : LanguageFileType(FaustLanguage.INSTANCE) {
@@ -15,4 +16,5 @@ object FaustLibFileType : LanguageFileType(FaustLanguage.INSTANCE) {
     override fun getDescription(): String = FaustBundle.message("faust.lib.file.type.description")
     override fun getDefaultExtension(): String = "lib"
     override fun getIcon(): Icon = FaustIcons.FaustLib
+    override fun getDisplayName(): String = FaustBundle.message("faust.lib.file.type.display.name")
 }

@@ -1,13 +1,25 @@
-package com.github.hatchjaw.faust;
+package com.github.hatchjaw.faust
 
-import com.intellij.lang.parser.GeneratedParserUtilBase;
-import com.intellij.psi.tree.IElementType;
+import com.github.hatchjaw.faust.psi.FaustTypes.*
+import com.intellij.lang.parser.GeneratedParserUtilBase
+import com.intellij.psi.tree.TokenSet
 
-import java.util.Arrays;
-import java.util.HashSet;
-
-import static com.github.hatchjaw.faust.psi.FaustTypes.*;
-
-public class FaustParserUtil extends GeneratedParserUtilBase {
-    static final HashSet<IElementType> KEYWORDS = new HashSet<>(Arrays.asList(CASE, ENVIRONMENT, LETREC, WITH));
+class FaustParserUtil : GeneratedParserUtilBase() {
+    companion object {
+        val KEYWORDS: TokenSet = TokenSet.create(
+            CASE,
+            ENVIRONMENT,
+            LETREC,
+            WITH,
+            WHERE,
+            LIBRARY,
+            IMPORT,
+            DECLARE,
+            COMPONENT,
+//            IPAR,
+//            ISEQ,
+//            ISUM,
+//            IPROD,
+        )
+    }
 }

@@ -1,0 +1,198 @@
+// This is a generated file. Not intended for manual editing.
+package com.github.hatchjaw.faust.psi.impl;
+
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.github.hatchjaw.faust.psi.FaustTypes.*;
+import com.github.hatchjaw.faust.psi.*;
+
+public class FaustPrimitiveIfxImpl extends FaustInfixImpl implements FaustPrimitiveIfx {
+
+  public FaustPrimitiveIfxImpl(@NotNull ASTNode node) {
+    super(node);
+  }
+
+  @Override
+  public void accept(@NotNull FaustVisitor visitor) {
+    visitor.visitPrimitiveIfx(this);
+  }
+
+  @Override
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof FaustVisitor) accept((FaustVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<FaustArgument> getArgumentList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustArgument.class);
+  }
+
+  @Override
+  @NotNull
+  public List<FaustDeclaration> getDeclarationList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustDeclaration.class);
+  }
+
+  @Override
+  @NotNull
+  public List<FaustDefinition> getDefinitionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustDefinition.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustExpression getExpression() {
+    return findChildByClass(FaustExpression.class);
+  }
+
+  @Override
+  @NotNull
+  public List<FaustFileImport> getFileImportList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustFileImport.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustInputs getInputs() {
+    return findChildByClass(FaustInputs.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustIterPar getIterPar() {
+    return findChildByClass(FaustIterPar.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustIterProd getIterProd() {
+    return findChildByClass(FaustIterProd.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustIterSeq getIterSeq() {
+    return findChildByClass(FaustIterSeq.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustIterSum getIterSum() {
+    return findChildByClass(FaustIterSum.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustLambdaAbstraction getLambdaAbstraction() {
+    return findChildByClass(FaustLambdaAbstraction.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustOutputs getOutputs() {
+    return findChildByClass(FaustOutputs.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustRuleList getRuleList() {
+    return findChildByClass(FaustRuleList.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustSoundfilePrim getSoundfilePrim() {
+    return findChildByClass(FaustSoundfilePrim.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiButton getUiButton() {
+    return findChildByClass(FaustUiButton.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiCheckbox getUiCheckbox() {
+    return findChildByClass(FaustUiCheckbox.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiHbargraph getUiHbargraph() {
+    return findChildByClass(FaustUiHbargraph.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiHgroup getUiHgroup() {
+    return findChildByClass(FaustUiHgroup.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiHslider getUiHslider() {
+    return findChildByClass(FaustUiHslider.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiNentry getUiNentry() {
+    return findChildByClass(FaustUiNentry.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiTgroup getUiTgroup() {
+    return findChildByClass(FaustUiTgroup.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiVbargraph getUiVbargraph() {
+    return findChildByClass(FaustUiVbargraph.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiVgroup getUiVgroup() {
+    return findChildByClass(FaustUiVgroup.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUiVslider getUiVslider() {
+    return findChildByClass(FaustUiVslider.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustUqString getUqString() {
+    return findChildByClass(FaustUqString.class);
+  }
+
+  @Override
+  @NotNull
+  public List<FaustVariant> getVariantList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustVariant.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getIdentifier() {
+    return findChildByType(IDENTIFIER);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNumber() {
+    return findChildByType(NUMBER);
+  }
+
+}

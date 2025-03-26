@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface FaustLambdaAbstraction extends PsiElement {
 
   @NotNull
-  FaustDiagComposition getDiagComposition();
+  FaustExpression getExpression();
 
   @NotNull
-  FaustParameterSeq getParameterSeq();
+  FaustParams getParams();
 
 }

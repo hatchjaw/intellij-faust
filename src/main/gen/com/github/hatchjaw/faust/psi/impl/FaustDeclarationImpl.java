@@ -28,9 +28,15 @@ public class FaustDeclarationImpl extends ASTWrapperPsiElement implements FaustD
   }
 
   @Override
-  @Nullable
-  public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
+  @NotNull
+  public List<FaustName> getNameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustName.class);
+  }
+
+  @Override
+  @NotNull
+  public FaustString getString() {
+    return findNotNullChildByClass(FaustString.class);
   }
 
 }

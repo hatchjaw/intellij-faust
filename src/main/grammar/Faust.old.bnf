@@ -1,0 +1,289 @@
+{
+    parserClass="com.github.hatchjaw.faust.FaustParser"
+    parserUtilClass="com.github.hatchjaw.faust.FaustParserUtil"
+
+    extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+    psiClassPrefix="Faust"
+    psiImplClassSuffix="Impl"
+    psiPackage="com.github.hatchjaw.faust.psi"
+    psiImplPackage="com.github.hatchjaw.faust.psi.impl"
+
+    elementTypeHolderClass="com.github.hatchjaw.faust.psi.FaustTypes"
+    elementTypeClass="com.github.hatchjaw.faust.psi.FaustElementType"
+    tokenTypeClass="com.github.hatchjaw.faust.psi.FaustTokenType"
+
+    tokens = [
+//        NEWLINE='regexp:(\R( \t)*)'
+        WHITE_SPACE='regexp:[ \t\n\x0B\f\r]+'
+        LINE_COMMENT='regexp://.*'
+//        BLOCK_COMMENT='regexp:/\*(\*(?!/)|[^*])*\*/'
+
+        // Iterations
+        ITER_PAR='par'
+        ITER_SEQ='seq'
+        ITER_SUM='sum'
+        ITER_PROD='prod'
+
+        IDENTIFIER='regexp:\p{Alpha}\w*'
+        LIBFILE='regexp:"\w+\.lib"'
+        DSPFILE='regexp:"\w+\.dsp"'
+        CINCLUDE='regexp:(<\w+\.h>|"\w+\.h")'
+        STRING="regexp:\"([^\"\\]|\\.)*\""
+//        STRING_UNQUOTED='regexp:([^\"\\]|\\.)*'
+        NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'
+
+        // Composition operations
+        COMPOSE_REC='~'
+        COMPOSE_PAR=','
+        COMPOSE_SEQ=':'
+        COMPOSE_SPLIT='<:'
+        COMPOSE_MERGE=':>'
+
+        // Punctuation
+        LPAREN='('
+        RPAREN=')'
+        LBRACE='{'
+        RBRACE='}'
+//        COMMA=','
+        SEMICOLON=';'
+        ASSIGN='='
+        LAMBDA='\'
+        DOT='.'
+
+        // Primitives
+        SIG_IDENTITY='_'
+        SIG_CUT='!'
+
+        MATH_ADD='+'
+        MATH_SUB='-'
+        MATH_MUL='*'
+        MATH_POW='^'
+        MATH_DIV='/'
+        MATH_REM='%'
+
+        BIT_OR='|'
+        BIT_AND='&'
+        BIT_XOR='xor'
+        BIT_LSHIFT='<<'
+        BIT_RSHIFT='>>'
+
+        COMPARE_LESS='<'
+        COMPARE_LEQ='<='
+        COMPARE_MORE='>'
+        COMPARE_GEQ='>='
+        COMPARE_EQ='=='
+        COMPARE_NEQ='!='
+
+        TIME_MEM='mem'
+        TIME_DELAY1="'"
+        TIME_DELAY='@'
+
+        // Documentation
+        MDOC_OPEN='<mdoc>'
+        MDOC_CLOSE='</mdoc>'
+    ]
+}
+
+Program ::= Root*
+private Root ::= !<<eof>> Statement
+
+private Statement ::= ((FileImport | Declaration | Definition | FunctionDefinition) ';') | Documentation {
+    pin=1
+    recoverWhile=DefinitionRecover
+}
+
+Documentation ::= MDOC_OPEN Doc* MDOC_CLOSE
+private Doc ::=
+//      FreeText
+      Equation
+    | Diagram
+    | Metadata
+    | Notice
+    | Listing
+//private FreeText ::= STRING_UNQUOTED
+private Equation ::= '<equation>' Expression '</equation>'
+private Diagram ::= '<diagram>' Expression '</diagram>'
+private Metadata ::= '<metadata>' Keyword '</metadata>'
+private Notice ::= '<notice />'
+private Listing ::= '<listing ' ListingAttribute* '/>'
+private ListingAttribute ::= mdoctags|dependencies|distributed '=' ('"true"'|'"false"')
+
+FileImport ::= [Variant*] import '(' LIBFILE ')'
+Variant ::= singleprecision | doubleprecision | quadprecision | fixedpointprecision
+
+Declaration ::= declare [IDENTIFIER] (name|author|copyright|version|license|licence|description) STRING
+
+Definition ::= [Variant*] IDENTIFIER '=' Expression {pin=3}
+private DefinitionRecover ::= !(';' | IDENTIFIER '=')
+
+// NB also supports pattern matching, e.g.
+//  duplicate(1,x) = x;
+//  duplicate(n,x) = x, duplicate(n-1,x);
+FunctionDefinition ::= IDENTIFIER '(' ParameterSeq ')' '=' Expression //{pin=2 recoverWhile=DefinitionRecover}
+ParameterSeq ::= ParameterSeqImpl | '(' ParameterSeqImpl ')'
+private ParameterSeqImpl ::= (IDENTIFIER|NUMBER) [ ',' ParameterSeq ]
+
+private Expression ::=
+      EnvExp
+    | DiagramExp
+    | NUMBER
+    | Operator
+
+// Diagram Expressions
+private DiagramExp ::= DiagComposition | DiagIteration // [With]
+//With ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
+
+DiagIteration ::= Iteration '(' IDENTIFIER ',' NumIter ',' DiagramExp ')' { pin=1 }
+
+Iteration ::=
+      ITER_PAR
+    | ITER_SEQ
+    | ITER_SUM
+    | ITER_PROD
+
+// TODO: This is suspect...
+NumIter ::= Infix
+
+DiagComposition ::= ( DiagCompositionImpl | '(' DiagCompositionImpl ')' ) ( WithExpression | LetrecExpression )*
+private DiagCompositionImpl ::= ExpressionElement [ Composition DiagComposition ]
+
+// Environment Expressions
+private EnvExp ::=
+    EnvironmentExpr [Access]
+    | LibraryExpr
+    | ComponentExpr
+//    | ExplicitSubst
+
+WithExpression ::= with '{' ((Definition | FunctionDefinition) ';')* '}'
+LetrecExpression ::= letrec '{' DiffEquation* [where Definition*] '}'
+LibraryExpr ::= library '(' LIBFILE ')'
+ComponentExpr ::= component '(' DSPFILE ')'
+EnvironmentExpr ::= environment '{' ((Definition | FunctionDefinition) ';')* '}'
+
+private ExpressionElement ::=
+      DiagIteration
+    | ForeignExpression
+    | ProgExp
+    | Infix
+    | Prefix
+    | Partial
+    | Operand
+    | FunctionCall [Access]
+    | TypeCast
+    | Operator Operator*
+    | Primitive
+
+private Primitive ::=
+      RouteExpr
+    | WaveformExpr
+//    | SoundFile
+//    | CPrimitive
+//    | MathPrimitive
+//    | DelayAndTables
+//    | UIElements
+
+RouteExpr ::= route '(' ParameterSeq ')'
+WaveformExpr ::= waveform '{' NUMBER (',' NUMBER)* '}'
+
+DiffEquation ::= "'" IDENTIFIER '=' Expression ';'
+
+ProgExp ::= Abstraction //| Application
+Abstraction ::= LambdaAbstraction | PatternAbstraction
+LambdaAbstraction ::= '\' '(' ParameterSeq ')' '.' '(' DiagComposition ')'
+PatternAbstraction ::= case '{' Rule* '}'
+Rule ::= '(' ParameterSeq ')' '=>' DiagComposition ';'
+
+//TypeCast ::= (int | float) '(' Expression ')'
+TypeCast ::= int | float
+
+Composition ::=
+      COMPOSE_REC
+    | COMPOSE_PAR
+    | COMPOSE_SEQ
+    | COMPOSE_MERGE
+    | COMPOSE_SPLIT
+
+UIElement ::=
+      UIElementButton
+    | UIElementSlider
+    | UIElementGroup
+    | UIElementGraph
+    | AttachExpr
+
+UIElementButton ::= (button | checkbox) '(' STRING ')'
+UIElementSlider ::= (hslider | vslider | nentry) '(' STRING ',' ArgumentSeq ')' //Expression ',' Expression ',' Expression ',' Expression ')'
+UIElementGroup ::= (hgroup | vgroup | tgroup) '(' STRING ',' DiagComposition ')'
+UIElementGraph ::= (hbargraph | vbargraph) '(' STRING ',' ArgumentSeq ')' //Expression ',' Expression ')'
+AttachExpr ::= attach '(' Expression ',' Expression ')'
+
+// General infix syntax; handles chained infixes and parentheses, e.g.
+//  y = a + (b + c + (d + e) + (f) + (g + h + i));
+//
+//  Infix ::= Operand Operator (Infix | '(' Infix ')') | Operand
+//  Operand ::= IDENTIFIER | '(' Infix ')'
+//  Operator ::= '+'
+Infix ::= (Operand | Operator) Operator ((Infix | Partial) | '(' Infix ')') | Operand
+Prefix ::= Operator '(' Operand ',' Operand ')'
+Partial ::= (Operator | TypeCast) '(' DiagramExp ')'
+
+private Operator ::=
+      Cut
+    | Math
+    | Delay
+    | Bitwise
+    | Comparator
+
+Operand ::= OperandImpl [Delay1*]
+// TODO: Make this less flaky.
+private OperandImpl ::=
+      [MATH_SUB] (FunctionCall [Access])
+    | IDENTIFIER [Access]
+    | [MATH_SUB] IDENTIFIER
+    | [MATH_SUB | MATH_ADD] NUMBER
+    | Partial
+    | UIElement
+    | SIG_IDENTITY
+    | '(' DiagComposition ')'
+
+Delay1 ::= TIME_DELAY1
+
+Cut ::= SIG_CUT
+
+Bitwise ::=
+      BIT_AND
+    | BIT_OR
+    | BIT_XOR
+    | BIT_LSHIFT
+    | BIT_RSHIFT
+
+Delay ::= TIME_DELAY | MEM
+
+Math ::=
+      MATH_ADD
+    | MATH_SUB
+    | MATH_MUL
+    | MATH_POW
+    | MATH_DIV
+    | MATH_REM
+
+Comparator ::=
+      COMPARE_LESS
+    | COMPARE_LEQ
+    | COMPARE_MORE
+    | COMPARE_GEQ
+    | COMPARE_EQ
+    | COMPARE_NEQ
+
+FunctionCall ::= IDENTIFIER '(' ArgumentSeq ')'
+ArgumentSeq ::= Expression [ ',' ArgumentSeq ]
+Access ::= ('.' (FunctionCall | IDENTIFIER))*
+
+// Foreign Expressions
+private ForeignExpression ::= ForeignFunction // | ForeignVariable | ForeignConstant
+ForeignFunction ::= ffunction '(' Signature ',' CINCLUDE ',' ('""' | LIBFILE) ')'
+Signature ::= Type FunNames '(' [ArgTypes] ')'
+Type ::= int | float
+FunNames ::= IDENTIFIER [ '|' FunNames]
+ArgTypes ::= ArgType [',' ArgTypes]
+ArgType ::= Type | any

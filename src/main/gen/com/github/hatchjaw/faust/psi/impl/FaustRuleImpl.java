@@ -29,14 +29,14 @@ public class FaustRuleImpl extends ASTWrapperPsiElement implements FaustRule {
 
   @Override
   @NotNull
-  public FaustDiagComposition getDiagComposition() {
-    return findNotNullChildByClass(FaustDiagComposition.class);
+  public FaustArgList getArgList() {
+    return findNotNullChildByClass(FaustArgList.class);
   }
 
   @Override
   @NotNull
-  public FaustParameterSeq getParameterSeq() {
-    return findNotNullChildByClass(FaustParameterSeq.class);
+  public FaustExpression getExpression() {
+    return findNotNullChildByClass(FaustExpression.class);
   }
 
 }

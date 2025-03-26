@@ -29,14 +29,8 @@ public class FaustFileImportImpl extends ASTWrapperPsiElement implements FaustFi
 
   @Override
   @NotNull
-  public List<FaustVariant> getVariantList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustVariant.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getLibfile() {
-    return findNotNullChildByType(LIBFILE);
+  public FaustUqString getUqString() {
+    return findNotNullChildByClass(FaustUqString.class);
   }
 
 }

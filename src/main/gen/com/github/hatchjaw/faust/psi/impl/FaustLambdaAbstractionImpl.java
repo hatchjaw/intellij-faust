@@ -29,14 +29,14 @@ public class FaustLambdaAbstractionImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public FaustDiagComposition getDiagComposition() {
-    return findNotNullChildByClass(FaustDiagComposition.class);
+  public FaustExpression getExpression() {
+    return findNotNullChildByClass(FaustExpression.class);
   }
 
   @Override
   @NotNull
-  public FaustParameterSeq getParameterSeq() {
-    return findNotNullChildByClass(FaustParameterSeq.class);
+  public FaustParams getParams() {
+    return findNotNullChildByClass(FaustParams.class);
   }
 
 }

@@ -18,6 +18,9 @@
 
         <lang.parserDefinition language="Faust"
                                implementationClass="com.github.hatchjaw.faust.FaustParserDefinition"/>
+
+        <lang.syntaxHighlighterFactory language="Faust"
+                                       implementationClass="com.github.hatchjaw.faust.FaustSyntaxHighlighterFactory"/>
     </extensions>
 
     <applicationListeners>

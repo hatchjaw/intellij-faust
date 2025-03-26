@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface FaustFileImport extends PsiElement {
 
   @NotNull
-  List<FaustVariant> getVariantList();
-
-  @NotNull
-  PsiElement getLibfile();
+  FaustUqString getUqString();
 
 }

@@ -8,45 +8,12 @@ import com.intellij.psi.PsiElement;
 public interface FaustDefinition extends PsiElement {
 
   @Nullable
-  FaustAccess getAccess();
-
-  @Nullable
-  FaustBitwise getBitwise();
-
-  @Nullable
-  FaustComparator getComparator();
-
-  @Nullable
-  FaustComponentExpr getComponentExpr();
-
-  @Nullable
-  FaustCut getCut();
-
-  @Nullable
-  FaustDelay getDelay();
-
-  @Nullable
-  FaustDiagComposition getDiagComposition();
-
-  @Nullable
-  FaustDiagIteration getDiagIteration();
-
-  @Nullable
-  FaustEnvironmentExpr getEnvironmentExpr();
-
-  @Nullable
-  FaustLibraryExpr getLibraryExpr();
-
-  @Nullable
-  FaustMath getMath();
+  FaustArgList getArgList();
 
   @NotNull
-  List<FaustVariant> getVariantList();
+  FaustDefName getDefName();
 
   @NotNull
-  PsiElement getIdentifier();
-
-  @Nullable
-  PsiElement getNumber();
+  FaustExpression getExpression();
 
 }

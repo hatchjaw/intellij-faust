@@ -29,86 +29,20 @@ public class FaustDefinitionImpl extends ASTWrapperPsiElement implements FaustDe
 
   @Override
   @Nullable
-  public FaustAccess getAccess() {
-    return findChildByClass(FaustAccess.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustBitwise getBitwise() {
-    return findChildByClass(FaustBitwise.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustComparator getComparator() {
-    return findChildByClass(FaustComparator.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustComponentExpr getComponentExpr() {
-    return findChildByClass(FaustComponentExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustCut getCut() {
-    return findChildByClass(FaustCut.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustDelay getDelay() {
-    return findChildByClass(FaustDelay.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustDiagComposition getDiagComposition() {
-    return findChildByClass(FaustDiagComposition.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustDiagIteration getDiagIteration() {
-    return findChildByClass(FaustDiagIteration.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustEnvironmentExpr getEnvironmentExpr() {
-    return findChildByClass(FaustEnvironmentExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustLibraryExpr getLibraryExpr() {
-    return findChildByClass(FaustLibraryExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustMath getMath() {
-    return findChildByClass(FaustMath.class);
+  public FaustArgList getArgList() {
+    return findChildByClass(FaustArgList.class);
   }
 
   @Override
   @NotNull
-  public List<FaustVariant> getVariantList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustVariant.class);
+  public FaustDefName getDefName() {
+    return findNotNullChildByClass(FaustDefName.class);
   }
 
   @Override
   @NotNull
-  public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNumber() {
-    return findChildByType(NUMBER);
+  public FaustExpression getExpression() {
+    return findNotNullChildByClass(FaustExpression.class);
   }
 
 }
