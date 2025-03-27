@@ -9,18 +9,28 @@
     <resource-bundle>messages.FaustBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.hatchjaw.faust.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <toolWindow
+                factoryClass="com.github.hatchjaw.faust.toolWindow.MyToolWindowFactory"
+                id="MyToolWindow"/>
 
-        <fileType name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
-                  implementationClass="com.github.hatchjaw.faust.FaustDSPFileType"/>
-        <fileType name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
-                  implementationClass="com.github.hatchjaw.faust.FaustLibFileType"/>
+        <fileType
+                name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
+                implementationClass="com.github.hatchjaw.faust.FaustDSPFileType"/>
+        <fileType
+                name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
+                implementationClass="com.github.hatchjaw.faust.FaustLibFileType"/>
 
-        <lang.parserDefinition language="Faust"
-                               implementationClass="com.github.hatchjaw.faust.FaustParserDefinition"/>
+        <lang.parserDefinition
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.FaustParserDefinition"/>
 
-        <lang.syntaxHighlighterFactory language="Faust"
-                                       implementationClass="com.github.hatchjaw.faust.FaustSyntaxHighlighterFactory"/>
+        <lang.syntaxHighlighterFactory
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.FaustSyntaxHighlighterFactory"/>
+
+        <lang.commenter
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.FaustCommenter"/>
     </extensions>
 
     <applicationListeners>

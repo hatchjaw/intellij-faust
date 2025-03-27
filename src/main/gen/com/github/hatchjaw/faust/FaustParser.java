@@ -1101,6 +1101,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   //     | CUT
   //     | MEM
   //     | PREFIX
+  //     | INTCAST
+  //     | FLOATCAST
   //     | ADD
   //     | SUB
   //     | MUL
@@ -1193,6 +1195,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
     if (!result_) result_ = consumeTokenSmart(builder_, CUT);
     if (!result_) result_ = consumeTokenSmart(builder_, MEM);
     if (!result_) result_ = consumeTokenSmart(builder_, PREFIX);
+    if (!result_) result_ = consumeTokenSmart(builder_, INTCAST);
+    if (!result_) result_ = consumeTokenSmart(builder_, FLOATCAST);
     if (!result_) result_ = consumeTokenSmart(builder_, ADD);
     if (!result_) result_ = consumeTokenSmart(builder_, SUB);
     if (!result_) result_ = consumeTokenSmart(builder_, MUL);
@@ -1244,14 +1248,14 @@ public class FaustParser implements PsiParser, LightPsiParser {
     if (!result_) result_ = consumeTokenSmart(builder_, HIGHEST);
     if (!result_) result_ = consumeTokenSmart(builder_, IDENTIFIER);
     if (!result_) result_ = parseTokensSmart(builder_, 0, SUB, IDENTIFIER);
-    if (!result_) result_ = PrimitiveIfx_58(builder_, level_ + 1);
-    if (!result_) result_ = LambdaAbstraction(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_60(builder_, level_ + 1);
-    if (!result_) result_ = PrimitiveIfx_61(builder_, level_ + 1);
+    if (!result_) result_ = LambdaAbstraction(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_62(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_63(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_64(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_65(builder_, level_ + 1);
+    if (!result_) result_ = PrimitiveIfx_66(builder_, level_ + 1);
+    if (!result_) result_ = PrimitiveIfx_67(builder_, level_ + 1);
     if (!result_) result_ = UiButton(builder_, level_ + 1);
     if (!result_) result_ = UiCheckbox(builder_, level_ + 1);
     if (!result_) result_ = UiVslider(builder_, level_ + 1);
@@ -1274,8 +1278,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // LPAREN Expression RPAREN
-  private static boolean PrimitiveIfx_58(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_58")) return false;
+  private static boolean PrimitiveIfx_60(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_60")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokenSmart(builder_, LPAREN);
@@ -1286,8 +1290,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // CASE LBRACE RuleList RBRACE
-  private static boolean PrimitiveIfx_60(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_60")) return false;
+  private static boolean PrimitiveIfx_62(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_62")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, CASE, LBRACE);
@@ -1298,8 +1302,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // COMPONENT LPAREN UqString RPAREN
-  private static boolean PrimitiveIfx_61(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_61")) return false;
+  private static boolean PrimitiveIfx_63(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_63")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, COMPONENT, LPAREN);
@@ -1310,8 +1314,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // LIBRARY LPAREN UqString RPAREN
-  private static boolean PrimitiveIfx_62(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_62")) return false;
+  private static boolean PrimitiveIfx_64(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_64")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, LIBRARY, LPAREN);
@@ -1322,8 +1326,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // ENVIRONMENT LBRACE StmtList RBRACE
-  private static boolean PrimitiveIfx_63(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_63")) return false;
+  private static boolean PrimitiveIfx_65(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_65")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, ENVIRONMENT, LBRACE);
@@ -1334,8 +1338,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // ROUTE LPAREN Argument PAR Argument RPAREN
-  private static boolean PrimitiveIfx_64(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_64")) return false;
+  private static boolean PrimitiveIfx_66(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_66")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, ROUTE, LPAREN);
@@ -1348,8 +1352,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
-  private static boolean PrimitiveIfx_65(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_65")) return false;
+  private static boolean PrimitiveIfx_67(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_67")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, ROUTE, LPAREN);

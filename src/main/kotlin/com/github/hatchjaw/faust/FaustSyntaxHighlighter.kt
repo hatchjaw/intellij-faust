@@ -22,7 +22,8 @@ class FaustSyntaxHighlighter : SyntaxHighlighterBase() {
             when (tokenType) {
                 LINE_COMMENT -> DefaultColor.LINE_COMMENT
                 BLOCK_COMMENT -> DefaultColor.BLOCK_COMMENT
-                UQ_STRING, STRING -> DefaultColor.STRING
+                DOC_COMMENT -> DefaultColor.DOC_COMMENT
+                STRING_LITERAL, UQ_STRING, STRING -> DefaultColor.STRING
                 ENDDEF -> DefaultColor.SEMICOLON
                 NUMBER -> DefaultColor.NUMBER
                 IDENTIFIER -> DefaultColor.IDENTIFIER

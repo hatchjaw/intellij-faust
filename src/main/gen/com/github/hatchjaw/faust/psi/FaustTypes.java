@@ -106,6 +106,7 @@ public interface FaustTypes {
   IElementType DELAY = new FaustTokenType("@");
   IElementType DELAY1 = new FaustTokenType("'");
   IElementType DIV = new FaustTokenType("/");
+  IElementType DOC_COMMENT = new FaustTokenType("DOC_COMMENT");
   IElementType DOT = new FaustTokenType(".");
   IElementType DOUBLEMODE = new FaustTokenType("doubleprecision");
   IElementType ENABLE = new FaustTokenType("enable");

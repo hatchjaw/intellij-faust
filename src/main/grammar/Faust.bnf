@@ -160,6 +160,7 @@
         WHITE_SPACE='regexp:[ \t\r\n]+'
         IDENTIFIER='regexp:(::)?_*[a-zA-Z]\w*(::_*[a-zA-Z]\w*)*'
         STRING_LITERAL="regexp:\"[^\"]*\""
+        DOC_COMMENT="regexp:(//-+`[^`]+`-+[\r\n])(//.*[\r\n])*?(//-+\R)"
         LINE_COMMENT='regexp://[^\r\n]*'
         BLOCK_COMMENT="regexp:/\*(([^*]|[\r\n])*(\*+[^*/])?)*(\*+/)?"
         NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'
@@ -286,6 +287,8 @@ PrimitiveIfx ::=
     | CUT
     | MEM
     | PREFIX
+    | INTCAST
+    | FLOATCAST
     | ADD
     | SUB
     | MUL

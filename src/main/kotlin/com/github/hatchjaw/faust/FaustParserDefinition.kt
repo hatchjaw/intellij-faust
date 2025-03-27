@@ -19,7 +19,7 @@ import com.intellij.psi.tree.TokenSet
 
 class FaustParserDefinition : ParserDefinition {
     companion object {
-        val COMMENTS = TokenSet.create(FaustTypes.LINE_COMMENT, FaustTypes.BLOCK_COMMENT)
+        val COMMENTS = TokenSet.create(FaustTypes.LINE_COMMENT, FaustTypes.BLOCK_COMMENT, FaustTypes.DOC_COMMENT)
         val FILE = IStubFileElementType<PsiFileStub<FaustFile>>(FaustLanguage.INSTANCE)
     }
 
