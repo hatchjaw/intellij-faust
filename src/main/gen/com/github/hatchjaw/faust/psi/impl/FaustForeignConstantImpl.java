@@ -11,20 +11,32 @@ import static com.github.hatchjaw.faust.psi.FaustTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.hatchjaw.faust.psi.*;
 
-public class FaustNameImpl extends ASTWrapperPsiElement implements FaustName {
+public class FaustForeignConstantImpl extends ASTWrapperPsiElement implements FaustForeignConstant {
 
-  public FaustNameImpl(@NotNull ASTNode node) {
+  public FaustForeignConstantImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FaustVisitor visitor) {
-    visitor.visitName(this);
+    visitor.visitForeignConstant(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof FaustVisitor) accept((FaustVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public FaustFstring getFstring() {
+    return findNotNullChildByClass(FaustFstring.class);
+  }
+
+  @Override
+  @NotNull
+  public FaustType getType() {
+    return findNotNullChildByClass(FaustType.class);
   }
 
   @Override

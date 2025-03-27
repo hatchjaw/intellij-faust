@@ -11,14 +11,14 @@ import static com.github.hatchjaw.faust.psi.FaustTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.hatchjaw.faust.psi.*;
 
-public class FaustIterSeqImpl extends ASTWrapperPsiElement implements FaustIterSeq {
+public class FaustForeignVariableImpl extends ASTWrapperPsiElement implements FaustForeignVariable {
 
-  public FaustIterSeqImpl(@NotNull ASTNode node) {
+  public FaustForeignVariableImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FaustVisitor visitor) {
-    visitor.visitIterSeq(this);
+    visitor.visitForeignVariable(this);
   }
 
   @Override
@@ -29,14 +29,14 @@ public class FaustIterSeqImpl extends ASTWrapperPsiElement implements FaustIterS
 
   @Override
   @NotNull
-  public FaustArgument getArgument() {
-    return findNotNullChildByClass(FaustArgument.class);
+  public FaustFstring getFstring() {
+    return findNotNullChildByClass(FaustFstring.class);
   }
 
   @Override
   @NotNull
-  public FaustExpression getExpression() {
-    return findNotNullChildByClass(FaustExpression.class);
+  public FaustType getType() {
+    return findNotNullChildByClass(FaustType.class);
   }
 
   @Override

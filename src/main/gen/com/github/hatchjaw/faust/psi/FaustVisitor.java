@@ -23,12 +23,20 @@ public class FaustVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitArgType(@NotNull FaustArgType o) {
+    visitPsiElement(o);
+  }
+
   public void visitArgument(@NotNull FaustArgument o) {
     visitPsiElement(o);
   }
 
   public void visitBrackIfx(@NotNull FaustBrackIfx o) {
     visitInfix(o);
+  }
+
+  public void visitDecName(@NotNull FaustDecName o) {
+    visitPsiElement(o);
   }
 
   public void visitDeclaration(@NotNull FaustDeclaration o) {
@@ -71,6 +79,22 @@ public class FaustVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitForeignConstant(@NotNull FaustForeignConstant o) {
+    visitPsiElement(o);
+  }
+
+  public void visitForeignFunction(@NotNull FaustForeignFunction o) {
+    visitPsiElement(o);
+  }
+
+  public void visitForeignVariable(@NotNull FaustForeignVariable o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFstring(@NotNull FaustFstring o) {
+    visitPsiElement(o);
+  }
+
   public void visitGeIfx(@NotNull FaustGeIfx o) {
     visitInfix(o);
   }
@@ -99,19 +123,7 @@ public class FaustVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitIterPar(@NotNull FaustIterPar o) {
-    visitPsiElement(o);
-  }
-
-  public void visitIterProd(@NotNull FaustIterProd o) {
-    visitPsiElement(o);
-  }
-
-  public void visitIterSeq(@NotNull FaustIterSeq o) {
-    visitPsiElement(o);
-  }
-
-  public void visitIterSum(@NotNull FaustIterSum o) {
+  public void visitIteration(@NotNull FaustIteration o) {
     visitPsiElement(o);
   }
 
@@ -155,10 +167,6 @@ public class FaustVisitor extends PsiElementVisitor {
     visitInfix(o);
   }
 
-  public void visitName(@NotNull FaustName o) {
-    visitPsiElement(o);
-  }
-
   public void visitNeIfx(@NotNull FaustNeIfx o) {
     visitInfix(o);
   }
@@ -191,7 +199,7 @@ public class FaustVisitor extends PsiElementVisitor {
     visitInfix(o);
   }
 
-  public void visitPrimitiveIfx(@NotNull FaustPrimitiveIfx o) {
+  public void visitPrimitive(@NotNull FaustPrimitive o) {
     visitInfix(o);
   }
 
@@ -231,6 +239,10 @@ public class FaustVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
+  public void visitSignature(@NotNull FaustSignature o) {
+    visitPsiElement(o);
+  }
+
   public void visitSoundfilePrim(@NotNull FaustSoundfilePrim o) {
     visitPsiElement(o);
   }
@@ -249,6 +261,14 @@ public class FaustVisitor extends PsiElementVisitor {
 
   public void visitSubIfx(@NotNull FaustSubIfx o) {
     visitInfix(o);
+  }
+
+  public void visitType(@NotNull FaustType o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTypeList(@NotNull FaustTypeList o) {
+    visitPsiElement(o);
   }
 
   public void visitUiButton(@NotNull FaustUiButton o) {
@@ -295,7 +315,15 @@ public class FaustVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitValList(@NotNull FaustValList o) {
+    visitPsiElement(o);
+  }
+
   public void visitVariant(@NotNull FaustVariant o) {
+    visitPsiElement(o);
+  }
+
+  public void visitWaveformPrimItive(@NotNull FaustWaveformPrimItive o) {
     visitPsiElement(o);
   }
 

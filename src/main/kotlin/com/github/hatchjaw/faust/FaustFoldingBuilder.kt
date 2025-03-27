@@ -3,7 +3,6 @@ package com.github.hatchjaw.faust
 import com.github.hatchjaw.faust.psi.*
 import com.github.hatchjaw.faust.psi.FaustTypes.*
 import com.github.hatchjaw.faust.psi.impl.FaustInfixExprImpl
-import com.github.hatchjaw.faust.psi.impl.FaustInfixImpl
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.CustomFoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
@@ -16,11 +15,8 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
-import org.mozilla.javascript.ast.InfixExpression
 
 class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
-
-//    override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String = "..."
 
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String {
         return when (node.psi) {
@@ -29,7 +25,7 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             is FaustSequentialComp,
             is FaustSplitComp,
             is FaustRecursiveComp,
-            is FaustParallelComp -> "..." // This is a bit broken
+            is FaustParallelComp -> "..."
 
             is PsiComment -> when (node.psi.elementType) {
                 DOC_COMMENT -> "//-- ... --"
@@ -82,19 +78,13 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             descriptors += FoldingDescriptor(o.node, TextRange(start, end))
         }
 
-        override fun visitIterSeq(o: FaustIterSeq) {
-            fold(o.expression)
+        override fun visitWaveformPrimItive(o: FaustWaveformPrimItive) {
+            val start = o.firstChild.endOffset
+            val end = o.lastChild.endOffset
+            descriptors += FoldingDescriptor(o.node, TextRange(start, end))
         }
 
-        override fun visitIterPar(o: FaustIterPar) {
-            fold(o.expression)
-        }
-
-        override fun visitIterSum(o: FaustIterSum) {
-            fold(o.expression)
-        }
-
-        override fun visitIterProd(o: FaustIterProd) {
+        override fun visitIteration(o: FaustIteration) {
             fold(o.expression)
         }
 

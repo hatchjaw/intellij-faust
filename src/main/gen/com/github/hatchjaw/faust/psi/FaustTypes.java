@@ -13,8 +13,10 @@ public interface FaustTypes {
   IElementType AND_IFX = new FaustElementType("AND_IFX");
   IElementType ARGUMENT = new FaustElementType("ARGUMENT");
   IElementType ARG_LIST = new FaustElementType("ARG_LIST");
+  IElementType ARG_TYPE = new FaustElementType("ARG_TYPE");
   IElementType BRACK_IFX = new FaustElementType("BRACK_IFX");
   IElementType DECLARATION = new FaustElementType("DECLARATION");
+  IElementType DEC_NAME = new FaustElementType("DEC_NAME");
   IElementType DEFINITION = new FaustElementType("DEFINITION");
   IElementType DEF_NAME = new FaustElementType("DEF_NAME");
   IElementType DELAY_1_IFX = new FaustElementType("DELAY_1_IFX");
@@ -24,6 +26,10 @@ public interface FaustTypes {
   IElementType EQ_IFX = new FaustElementType("EQ_IFX");
   IElementType EXPRESSION = new FaustElementType("EXPRESSION");
   IElementType FILE_IMPORT = new FaustElementType("FILE_IMPORT");
+  IElementType FOREIGN_CONSTANT = new FaustElementType("FOREIGN_CONSTANT");
+  IElementType FOREIGN_FUNCTION = new FaustElementType("FOREIGN_FUNCTION");
+  IElementType FOREIGN_VARIABLE = new FaustElementType("FOREIGN_VARIABLE");
+  IElementType FSTRING = new FaustElementType("FSTRING");
   IElementType GE_IFX = new FaustElementType("GE_IFX");
   IElementType GT_IFX = new FaustElementType("GT_IFX");
   IElementType IDENT = new FaustElementType("IDENT");
@@ -31,10 +37,7 @@ public interface FaustTypes {
   IElementType INFIX_ARG = new FaustElementType("INFIX_ARG");
   IElementType INFIX_EXPR = new FaustElementType("INFIX_EXPR");
   IElementType INPUTS = new FaustElementType("INPUTS");
-  IElementType ITER_PAR = new FaustElementType("ITER_PAR");
-  IElementType ITER_PROD = new FaustElementType("ITER_PROD");
-  IElementType ITER_SEQ = new FaustElementType("ITER_SEQ");
-  IElementType ITER_SUM = new FaustElementType("ITER_SUM");
+  IElementType ITERATION = new FaustElementType("ITERATION");
   IElementType LAMBDA_ABSTRACTION = new FaustElementType("LAMBDA_ABSTRACTION");
   IElementType LETREC_DEF_LIST_EXPR = new FaustElementType("LETREC_DEF_LIST_EXPR");
   IElementType LETREC_EXPR = new FaustElementType("LETREC_EXPR");
@@ -45,7 +48,6 @@ public interface FaustTypes {
   IElementType MERGE_COMP = new FaustElementType("MERGE_COMP");
   IElementType MOD_IFX = new FaustElementType("MOD_IFX");
   IElementType MUL_IFX = new FaustElementType("MUL_IFX");
-  IElementType NAME = new FaustElementType("NAME");
   IElementType NE_IFX = new FaustElementType("NE_IFX");
   IElementType OR_IFX = new FaustElementType("OR_IFX");
   IElementType OUTPUTS = new FaustElementType("OUTPUTS");
@@ -54,7 +56,7 @@ public interface FaustTypes {
   IElementType PAREN_IFX = new FaustElementType("PAREN_IFX");
   IElementType PATTERN_ABSTRACTION = new FaustElementType("PATTERN_ABSTRACTION");
   IElementType POW_IFX = new FaustElementType("POW_IFX");
-  IElementType PRIMITIVE_IFX = new FaustElementType("PRIMITIVE_IFX");
+  IElementType PRIMITIVE = new FaustElementType("PRIMITIVE");
   IElementType RECURSIVE_COMP = new FaustElementType("RECURSIVE_COMP");
   IElementType REC_ARG = new FaustElementType("REC_ARG");
   IElementType REC_DEFINITION = new FaustElementType("REC_DEFINITION");
@@ -64,11 +66,14 @@ public interface FaustTypes {
   IElementType RULE_LIST = new FaustElementType("RULE_LIST");
   IElementType SEQUENTIAL_COMP = new FaustElementType("SEQUENTIAL_COMP");
   IElementType SEQ_ARG = new FaustElementType("SEQ_ARG");
+  IElementType SIGNATURE = new FaustElementType("SIGNATURE");
   IElementType SOUNDFILE_PRIM = new FaustElementType("SOUNDFILE_PRIM");
   IElementType SPLIT_ARG = new FaustElementType("SPLIT_ARG");
   IElementType SPLIT_COMP = new FaustElementType("SPLIT_COMP");
   IElementType STRING = new FaustElementType("STRING");
   IElementType SUB_IFX = new FaustElementType("SUB_IFX");
+  IElementType TYPE = new FaustElementType("TYPE");
+  IElementType TYPE_LIST = new FaustElementType("TYPE_LIST");
   IElementType UI_BUTTON = new FaustElementType("UI_BUTTON");
   IElementType UI_CHECKBOX = new FaustElementType("UI_CHECKBOX");
   IElementType UI_HBARGRAPH = new FaustElementType("UI_HBARGRAPH");
@@ -80,7 +85,9 @@ public interface FaustTypes {
   IElementType UI_VGROUP = new FaustElementType("UI_VGROUP");
   IElementType UI_VSLIDER = new FaustElementType("UI_VSLIDER");
   IElementType UQ_STRING = new FaustElementType("UQ_STRING");
+  IElementType VAL_LIST = new FaustElementType("VAL_LIST");
   IElementType VARIANT = new FaustElementType("VARIANT");
+  IElementType WAVEFORM_PRIM_ITIVE = new FaustElementType("WAVEFORM_PRIM_ITIVE");
   IElementType WITH_EXPR = new FaustElementType("WITH_EXPR");
   IElementType XOR_IFX = new FaustElementType("XOR_IFX");
 
@@ -103,6 +110,7 @@ public interface FaustTypes {
   IElementType CONTROL = new FaustTokenType("control");
   IElementType COS = new FaustTokenType("cos");
   IElementType CUT = new FaustTokenType("!");
+  IElementType C_HEADER = new FaustTokenType("C_HEADER");
   IElementType DECLARE = new FaustTokenType("declare");
   IElementType DEF = new FaustTokenType("=");
   IElementType DELAY = new FaustTokenType("@");
@@ -217,11 +225,17 @@ public interface FaustTypes {
       else if (type == ARG_LIST) {
         return new FaustArgListImpl(node);
       }
+      else if (type == ARG_TYPE) {
+        return new FaustArgTypeImpl(node);
+      }
       else if (type == BRACK_IFX) {
         return new FaustBrackIfxImpl(node);
       }
       else if (type == DECLARATION) {
         return new FaustDeclarationImpl(node);
+      }
+      else if (type == DEC_NAME) {
+        return new FaustDecNameImpl(node);
       }
       else if (type == DEFINITION) {
         return new FaustDefinitionImpl(node);
@@ -247,6 +261,18 @@ public interface FaustTypes {
       else if (type == FILE_IMPORT) {
         return new FaustFileImportImpl(node);
       }
+      else if (type == FOREIGN_CONSTANT) {
+        return new FaustForeignConstantImpl(node);
+      }
+      else if (type == FOREIGN_FUNCTION) {
+        return new FaustForeignFunctionImpl(node);
+      }
+      else if (type == FOREIGN_VARIABLE) {
+        return new FaustForeignVariableImpl(node);
+      }
+      else if (type == FSTRING) {
+        return new FaustFstringImpl(node);
+      }
       else if (type == GE_IFX) {
         return new FaustGeIfxImpl(node);
       }
@@ -265,17 +291,8 @@ public interface FaustTypes {
       else if (type == INPUTS) {
         return new FaustInputsImpl(node);
       }
-      else if (type == ITER_PAR) {
-        return new FaustIterParImpl(node);
-      }
-      else if (type == ITER_PROD) {
-        return new FaustIterProdImpl(node);
-      }
-      else if (type == ITER_SEQ) {
-        return new FaustIterSeqImpl(node);
-      }
-      else if (type == ITER_SUM) {
-        return new FaustIterSumImpl(node);
+      else if (type == ITERATION) {
+        return new FaustIterationImpl(node);
       }
       else if (type == LAMBDA_ABSTRACTION) {
         return new FaustLambdaAbstractionImpl(node);
@@ -307,9 +324,6 @@ public interface FaustTypes {
       else if (type == MUL_IFX) {
         return new FaustMulIfxImpl(node);
       }
-      else if (type == NAME) {
-        return new FaustNameImpl(node);
-      }
       else if (type == NE_IFX) {
         return new FaustNeIfxImpl(node);
       }
@@ -334,8 +348,8 @@ public interface FaustTypes {
       else if (type == POW_IFX) {
         return new FaustPowIfxImpl(node);
       }
-      else if (type == PRIMITIVE_IFX) {
-        return new FaustPrimitiveIfxImpl(node);
+      else if (type == PRIMITIVE) {
+        return new FaustPrimitiveImpl(node);
       }
       else if (type == RECURSIVE_COMP) {
         return new FaustRecursiveCompImpl(node);
@@ -364,6 +378,9 @@ public interface FaustTypes {
       else if (type == SEQ_ARG) {
         return new FaustSeqArgImpl(node);
       }
+      else if (type == SIGNATURE) {
+        return new FaustSignatureImpl(node);
+      }
       else if (type == SOUNDFILE_PRIM) {
         return new FaustSoundfilePrimImpl(node);
       }
@@ -378,6 +395,12 @@ public interface FaustTypes {
       }
       else if (type == SUB_IFX) {
         return new FaustSubIfxImpl(node);
+      }
+      else if (type == TYPE) {
+        return new FaustTypeImpl(node);
+      }
+      else if (type == TYPE_LIST) {
+        return new FaustTypeListImpl(node);
       }
       else if (type == UI_BUTTON) {
         return new FaustUiButtonImpl(node);
@@ -412,8 +435,14 @@ public interface FaustTypes {
       else if (type == UQ_STRING) {
         return new FaustUqStringImpl(node);
       }
+      else if (type == VAL_LIST) {
+        return new FaustValListImpl(node);
+      }
       else if (type == VARIANT) {
         return new FaustVariantImpl(node);
+      }
+      else if (type == WAVEFORM_PRIM_ITIVE) {
+        return new FaustWaveformPrimItiveImpl(node);
       }
       else if (type == WITH_EXPR) {
         return new FaustWithExprImpl(node);

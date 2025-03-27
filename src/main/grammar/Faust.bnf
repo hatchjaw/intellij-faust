@@ -160,7 +160,8 @@
         WHITE_SPACE='regexp:[ \t\r\n]+'
         IDENTIFIER='regexp:(::)?_*[a-zA-Z]\w*(::_*[a-zA-Z]\w*)*'
         STRING_LITERAL="regexp:\"[^\"]*\""
-        DOC_COMMENT="regexp:(//-+`[^`]+`-+[\r\n])(//.*[\r\n]|[\r\n])*?(//-+\R)"
+        C_HEADER = "regexp:<\w+(\.[a-zA-Z])?>"
+        DOC_COMMENT="regexp:(//-+?[^-]+-+[\r\n])(//.*[\r\n]|[\r\n])*?(//-+\R)" // Dodgy
         LINE_COMMENT='regexp://[^\r\n]*'
         BLOCK_COMMENT="regexp:/\*(([^*]|[\r\n])*(\*+[^*/])?)*(\*+/)?"
         NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'
@@ -177,6 +178,8 @@ private VariantList ::= Variant*
 
 private RecList ::= RecDefinition*
 
+ValList ::= (NUMBER PAR)* NUMBER
+
 Variant ::=
       FLOATMODE
     | DOUBLEMODE
@@ -192,8 +195,8 @@ private Statement ::=
 FileImport ::= IMPORT LPAREN UqString RPAREN ENDDEF
 
 Declaration ::=
-      DECLARE Name String ENDDEF
-    | DECLARE Name Name String ENDDEF
+      DECLARE DecName String ENDDEF
+    | DECLARE DecName DecName String ENDDEF
 
 Definition ::=
       DefName LPAREN ArgList RPAREN DEF Expression ENDDEF
@@ -254,7 +257,7 @@ Infix ::=
     | NeIfx
     | ParenIfx
     | BrackIfx
-    | PrimitiveIfx
+    | Primitive
 
 AddIfx ::= Infix ADD Infix
 SubIfx ::= Infix SUB Infix
@@ -278,9 +281,10 @@ EqIfx ::= Infix EQ Infix
 NeIfx ::= Infix NE Infix
 ParenIfx ::= Infix LPAREN ArgList RPAREN
 BrackIfx ::= Infix LBRACK DefList RBRACK
-
-PrimitiveIfx ::=
-      NUMBER
+Primitive ::=
+      IDENTIFIER
+    | SUB IDENTIFIER
+    | NUMBER
     | ADD NUMBER
     | SUB NUMBER
     | WIRE
@@ -338,19 +342,17 @@ PrimitiveIfx ::=
     | ASSERTBOUNDS
     | LOWEST
     | HIGHEST
-    | IDENTIFIER
-    | SUB IDENTIFIER
     | LPAREN Expression RPAREN
     | LambdaAbstraction
 //    | LBRACK ModList LAPPLY Expression RBRACK
     | PatternAbstraction
-//    | ForeignFunction
-//    | ForeignConstant
-//    | ForeignVariable
+    | ForeignFunction
+    | ForeignConstant
+    | ForeignVariable
     | COMPONENT LPAREN UqString RPAREN
     | LIBRARY LPAREN UqString RPAREN
     | EnvironmentConstruction
-//    | WAVEFORM LBRACE ValList RBRACE
+    | WaveformPrimItive
     | ROUTE LPAREN Argument PAR Argument RPAREN // Fake route?
     | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
     | UiButton
@@ -364,12 +366,11 @@ PrimitiveIfx ::=
     | UiVbargraph
     | UiHbargraph
     | SoundfilePrim
-    | IterPar
-    | IterSeq
-    | IterSum
-    | IterProd
+    | Iteration
     | Inputs
-    | Outputs
+    | Outputs {
+    extends=Infix
+}
 
 PatternAbstraction ::= CASE LBRACE RuleList RBRACE
 
@@ -377,9 +378,11 @@ LambdaAbstraction ::= LAMBDA LPAREN Params RPAREN DOT LPAREN Expression RPAREN
 
 EnvironmentConstruction ::= ENVIRONMENT LBRACE StmtList RBRACE
 
+WaveformPrimItive ::= WAVEFORM LBRACE ValList RBRACE
+
 Ident ::= IDENTIFIER
 
-Name ::= IDENTIFIER
+DecName ::= IDENTIFIER
 
 ArgList ::= (Argument PAR)* Argument
 
@@ -400,15 +403,17 @@ String ::= STRING_LITERAL
 
 UqString ::= STRING_LITERAL
 
-IterPar ::= IPAR LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-IterSeq ::= ISEQ LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-IterSum ::= ISUM LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-IterProd ::= IPROD LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+Fstring ::= STRING_LITERAL | C_HEADER
+
+Iteration ::= (IPAR | ISEQ | ISUM | IPROD) LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
 
 Inputs ::= INS LPAREN Expression RPAREN
 Outputs ::= OUTS LPAREN Expression RPAREN
+ForeignFunction ::= FFUNCTION LPAREN Signature PAR Fstring PAR String RPAREN
+ForeignConstant ::= FCONSTANT LPAREN Type IDENTIFIER PAR Fstring RPAREN
+ForeignVariable ::= FVARIABLE LPAREN Type IDENTIFIER PAR Fstring RPAREN
 UiButton ::= BUTTON LPAREN UqString RPAREN
-UiCheckbox ::= LPAREN UqString RPAREN
+UiCheckbox ::= CHECKBOX LPAREN UqString RPAREN
 UiVslider ::= VSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
 UiHslider ::= HSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
 UiNentry ::= NENTRY LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
@@ -418,6 +423,22 @@ UiTgroup ::= TGROUP LPAREN UqString PAR Expression RPAREN
 UiVbargraph ::= VBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN
 UiHbargraph ::= HBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN
 SoundfilePrim ::= SOUNDFILE LPAREN UqString PAR Argument RPAREN
+
+Signature ::=
+      Type Ident LPAREN TypeList RPAREN
+    | Type Ident OR Ident LPAREN TypeList RPAREN
+    | Type Ident OR Ident OR Ident LPAREN TypeList RPAREN
+    | Type Ident OR Ident OR Ident OR Ident LPAREN TypeList RPAREN
+    | Type Ident LPAREN RPAREN
+    | Type Ident OR Ident LPAREN RPAREN
+    | Type Ident OR Ident OR Ident LPAREN RPAREN
+    | Type Ident OR Ident OR Ident OR Ident LPAREN RPAREN
+
+TypeList ::= (ArgType PAR)* ArgType
+
+Type ::= INTCAST | FLOATCAST
+
+ArgType ::= Type | NOTYPECAST
 
 RuleList ::= Rule*
 Rule ::= LPAREN ArgList RPAREN ARROW Expression ENDDEF

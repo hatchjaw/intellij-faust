@@ -46,7 +46,7 @@ public class FaustParser implements PsiParser, LightPsiParser {
       GE_IFX, GT_IFX, INFIX, LE_IFX,
       LSH_IFX, LT_IFX, MOD_IFX, MUL_IFX,
       NE_IFX, OR_IFX, PAREN_IFX, POW_IFX,
-      PRIMITIVE_IFX, RSH_IFX, SUB_IFX, XOR_IFX),
+      PRIMITIVE, RSH_IFX, SUB_IFX, XOR_IFX),
   };
 
   /* ********************************************************** */
@@ -84,8 +84,32 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // DECLARE Name String ENDDEF
-  //     | DECLARE Name Name String ENDDEF
+  // Type | NOTYPECAST
+  public static boolean ArgType(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ArgType")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, ARG_TYPE, "<arg type>");
+    result_ = Type(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, NOTYPECAST);
+    exit_section_(builder_, level_, marker_, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER
+  public static boolean DecName(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "DecName")) return false;
+    if (!nextTokenIs(builder_, IDENTIFIER)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, IDENTIFIER);
+    exit_section_(builder_, marker_, DEC_NAME, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // DECLARE DecName String ENDDEF
+  //     | DECLARE DecName DecName String ENDDEF
   public static boolean Declaration(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "Declaration")) return false;
     if (!nextTokenIs(builder_, DECLARE)) return false;
@@ -97,27 +121,27 @@ public class FaustParser implements PsiParser, LightPsiParser {
     return result_;
   }
 
-  // DECLARE Name String ENDDEF
+  // DECLARE DecName String ENDDEF
   private static boolean Declaration_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "Declaration_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DECLARE);
-    result_ = result_ && Name(builder_, level_ + 1);
+    result_ = result_ && DecName(builder_, level_ + 1);
     result_ = result_ && String(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, ENDDEF);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // DECLARE Name Name String ENDDEF
+  // DECLARE DecName DecName String ENDDEF
   private static boolean Declaration_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "Declaration_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DECLARE);
-    result_ = result_ && Name(builder_, level_ + 1);
-    result_ = result_ && Name(builder_, level_ + 1);
+    result_ = result_ && DecName(builder_, level_ + 1);
+    result_ = result_ && DecName(builder_, level_ + 1);
     result_ = result_ && String(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, ENDDEF);
     exit_section_(builder_, marker_, null, result_);
@@ -230,6 +254,69 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // FCONSTANT LPAREN Type IDENTIFIER PAR Fstring RPAREN
+  public static boolean ForeignConstant(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ForeignConstant")) return false;
+    if (!nextTokenIs(builder_, FCONSTANT)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeTokens(builder_, 0, FCONSTANT, LPAREN);
+    result_ = result_ && Type(builder_, level_ + 1);
+    result_ = result_ && consumeTokens(builder_, 0, IDENTIFIER, PAR);
+    result_ = result_ && Fstring(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, FOREIGN_CONSTANT, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // FFUNCTION LPAREN Signature PAR Fstring PAR String RPAREN
+  public static boolean ForeignFunction(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ForeignFunction")) return false;
+    if (!nextTokenIs(builder_, FFUNCTION)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeTokens(builder_, 0, FFUNCTION, LPAREN);
+    result_ = result_ && Signature(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, PAR);
+    result_ = result_ && Fstring(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, PAR);
+    result_ = result_ && String(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, FOREIGN_FUNCTION, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // FVARIABLE LPAREN Type IDENTIFIER PAR Fstring RPAREN
+  public static boolean ForeignVariable(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ForeignVariable")) return false;
+    if (!nextTokenIs(builder_, FVARIABLE)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeTokens(builder_, 0, FVARIABLE, LPAREN);
+    result_ = result_ && Type(builder_, level_ + 1);
+    result_ = result_ && consumeTokens(builder_, 0, IDENTIFIER, PAR);
+    result_ = result_ && Fstring(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, FOREIGN_VARIABLE, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // STRING_LITERAL | C_HEADER
+  public static boolean Fstring(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Fstring")) return false;
+    if (!nextTokenIs(builder_, "<fstring>", C_HEADER, STRING_LITERAL)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, FSTRING, "<fstring>");
+    result_ = consumeToken(builder_, STRING_LITERAL);
+    if (!result_) result_ = consumeToken(builder_, C_HEADER);
+    exit_section_(builder_, level_, marker_, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // IDENTIFIER
   public static boolean Ident(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "Ident")) return false;
@@ -256,66 +343,29 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IPAR LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-  public static boolean IterPar(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "IterPar")) return false;
-    if (!nextTokenIs(builder_, IPAR)) return false;
+  // (IPAR | ISEQ | ISUM | IPROD) LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+  public static boolean Iteration(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Iteration")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeTokens(builder_, 0, IPAR, LPAREN, IDENTIFIER, PAR);
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, ITERATION, "<iteration>");
+    result_ = Iteration_0(builder_, level_ + 1);
+    result_ = result_ && consumeTokens(builder_, 0, LPAREN, IDENTIFIER, PAR);
     result_ = result_ && Argument(builder_, level_ + 1, -1);
     result_ = result_ && consumeToken(builder_, PAR);
     result_ = result_ && Expression(builder_, level_ + 1, -1);
     result_ = result_ && consumeToken(builder_, RPAREN);
-    exit_section_(builder_, marker_, ITER_PAR, result_);
+    exit_section_(builder_, level_, marker_, result_, false, null);
     return result_;
   }
 
-  /* ********************************************************** */
-  // IPROD LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-  public static boolean IterProd(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "IterProd")) return false;
-    if (!nextTokenIs(builder_, IPROD)) return false;
+  // IPAR | ISEQ | ISUM | IPROD
+  private static boolean Iteration_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Iteration_0")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeTokens(builder_, 0, IPROD, LPAREN, IDENTIFIER, PAR);
-    result_ = result_ && Argument(builder_, level_ + 1, -1);
-    result_ = result_ && consumeToken(builder_, PAR);
-    result_ = result_ && Expression(builder_, level_ + 1, -1);
-    result_ = result_ && consumeToken(builder_, RPAREN);
-    exit_section_(builder_, marker_, ITER_PROD, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // ISEQ LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-  public static boolean IterSeq(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "IterSeq")) return false;
-    if (!nextTokenIs(builder_, ISEQ)) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeTokens(builder_, 0, ISEQ, LPAREN, IDENTIFIER, PAR);
-    result_ = result_ && Argument(builder_, level_ + 1, -1);
-    result_ = result_ && consumeToken(builder_, PAR);
-    result_ = result_ && Expression(builder_, level_ + 1, -1);
-    result_ = result_ && consumeToken(builder_, RPAREN);
-    exit_section_(builder_, marker_, ITER_SEQ, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // ISUM LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-  public static boolean IterSum(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "IterSum")) return false;
-    if (!nextTokenIs(builder_, ISUM)) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeTokens(builder_, 0, ISUM, LPAREN, IDENTIFIER, PAR);
-    result_ = result_ && Argument(builder_, level_ + 1, -1);
-    result_ = result_ && consumeToken(builder_, PAR);
-    result_ = result_ && Expression(builder_, level_ + 1, -1);
-    result_ = result_ && consumeToken(builder_, RPAREN);
-    exit_section_(builder_, marker_, ITER_SUM, result_);
+    result_ = consumeToken(builder_, IPAR);
+    if (!result_) result_ = consumeToken(builder_, ISEQ);
+    if (!result_) result_ = consumeToken(builder_, ISUM);
+    if (!result_) result_ = consumeToken(builder_, IPROD);
     return result_;
   }
 
@@ -332,18 +382,6 @@ public class FaustParser implements PsiParser, LightPsiParser {
     result_ = result_ && Expression(builder_, level_ + 1, -1);
     result_ = result_ && consumeToken(builder_, RPAREN);
     exit_section_(builder_, marker_, LAMBDA_ABSTRACTION, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // IDENTIFIER
-  public static boolean Name(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "Name")) return false;
-    if (!nextTokenIs(builder_, IDENTIFIER)) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, IDENTIFIER);
-    exit_section_(builder_, marker_, NAME, result_);
     return result_;
   }
 
@@ -501,6 +539,160 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // Type Ident LPAREN TypeList RPAREN
+  //     | Type Ident OR Ident LPAREN TypeList RPAREN
+  //     | Type Ident OR Ident OR Ident LPAREN TypeList RPAREN
+  //     | Type Ident OR Ident OR Ident OR Ident LPAREN TypeList RPAREN
+  //     | Type Ident LPAREN RPAREN
+  //     | Type Ident OR Ident LPAREN RPAREN
+  //     | Type Ident OR Ident OR Ident LPAREN RPAREN
+  //     | Type Ident OR Ident OR Ident OR Ident LPAREN RPAREN
+  public static boolean Signature(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature")) return false;
+    if (!nextTokenIs(builder_, "<signature>", FLOATCAST, INTCAST)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, SIGNATURE, "<signature>");
+    result_ = Signature_0(builder_, level_ + 1);
+    if (!result_) result_ = Signature_1(builder_, level_ + 1);
+    if (!result_) result_ = Signature_2(builder_, level_ + 1);
+    if (!result_) result_ = Signature_3(builder_, level_ + 1);
+    if (!result_) result_ = Signature_4(builder_, level_ + 1);
+    if (!result_) result_ = Signature_5(builder_, level_ + 1);
+    if (!result_) result_ = Signature_6(builder_, level_ + 1);
+    if (!result_) result_ = Signature_7(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, result_, false, null);
+    return result_;
+  }
+
+  // Type Ident LPAREN TypeList RPAREN
+  private static boolean Signature_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = Type(builder_, level_ + 1);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, LPAREN);
+    result_ = result_ && TypeList(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // Type Ident OR Ident LPAREN TypeList RPAREN
+  private static boolean Signature_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature_1")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = Type(builder_, level_ + 1);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, LPAREN);
+    result_ = result_ && TypeList(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // Type Ident OR Ident OR Ident LPAREN TypeList RPAREN
+  private static boolean Signature_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature_2")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = Type(builder_, level_ + 1);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, LPAREN);
+    result_ = result_ && TypeList(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // Type Ident OR Ident OR Ident OR Ident LPAREN TypeList RPAREN
+  private static boolean Signature_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature_3")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = Type(builder_, level_ + 1);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, LPAREN);
+    result_ = result_ && TypeList(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // Type Ident LPAREN RPAREN
+  private static boolean Signature_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature_4")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = Type(builder_, level_ + 1);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeTokens(builder_, 0, LPAREN, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // Type Ident OR Ident LPAREN RPAREN
+  private static boolean Signature_5(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature_5")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = Type(builder_, level_ + 1);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeTokens(builder_, 0, LPAREN, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // Type Ident OR Ident OR Ident LPAREN RPAREN
+  private static boolean Signature_6(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature_6")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = Type(builder_, level_ + 1);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeTokens(builder_, 0, LPAREN, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // Type Ident OR Ident OR Ident OR Ident LPAREN RPAREN
+  private static boolean Signature_7(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Signature_7")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = Type(builder_, level_ + 1);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, OR);
+    result_ = result_ && Ident(builder_, level_ + 1);
+    result_ = result_ && consumeTokens(builder_, 0, LPAREN, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // SOUNDFILE LPAREN UqString PAR Argument RPAREN
   public static boolean SoundfilePrim(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "SoundfilePrim")) return false;
@@ -565,6 +757,53 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // INTCAST | FLOATCAST
+  public static boolean Type(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Type")) return false;
+    if (!nextTokenIs(builder_, "<type>", FLOATCAST, INTCAST)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, TYPE, "<type>");
+    result_ = consumeToken(builder_, INTCAST);
+    if (!result_) result_ = consumeToken(builder_, FLOATCAST);
+    exit_section_(builder_, level_, marker_, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // (ArgType PAR)* ArgType
+  public static boolean TypeList(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "TypeList")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, TYPE_LIST, "<type list>");
+    result_ = TypeList_0(builder_, level_ + 1);
+    result_ = result_ && ArgType(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, result_, false, null);
+    return result_;
+  }
+
+  // (ArgType PAR)*
+  private static boolean TypeList_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "TypeList_0")) return false;
+    while (true) {
+      int pos_ = current_position_(builder_);
+      if (!TypeList_0_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "TypeList_0", pos_)) break;
+    }
+    return true;
+  }
+
+  // ArgType PAR
+  private static boolean TypeList_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "TypeList_0_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = ArgType(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, PAR);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // BUTTON LPAREN UqString RPAREN
   public static boolean UiButton(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "UiButton")) return false;
@@ -579,13 +818,13 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LPAREN UqString RPAREN
+  // CHECKBOX LPAREN UqString RPAREN
   public static boolean UiCheckbox(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "UiCheckbox")) return false;
-    if (!nextTokenIs(builder_, LPAREN)) return false;
+    if (!nextTokenIs(builder_, CHECKBOX)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, LPAREN);
+    result_ = consumeTokens(builder_, 0, CHECKBOX, LPAREN);
     result_ = result_ && UqString(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RPAREN);
     exit_section_(builder_, marker_, UI_CHECKBOX, result_);
@@ -755,6 +994,40 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // (NUMBER PAR)* NUMBER
+  public static boolean ValList(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ValList")) return false;
+    if (!nextTokenIs(builder_, NUMBER)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = ValList_0(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, NUMBER);
+    exit_section_(builder_, marker_, VAL_LIST, result_);
+    return result_;
+  }
+
+  // (NUMBER PAR)*
+  private static boolean ValList_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ValList_0")) return false;
+    while (true) {
+      int pos_ = current_position_(builder_);
+      if (!ValList_0_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "ValList_0", pos_)) break;
+    }
+    return true;
+  }
+
+  // NUMBER PAR
+  private static boolean ValList_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ValList_0_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeTokens(builder_, 0, NUMBER, PAR);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // FLOATMODE
   //     | DOUBLEMODE
   //     | QUADMODE
@@ -781,6 +1054,20 @@ public class FaustParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(builder_, "VariantList", pos_)) break;
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // WAVEFORM LBRACE ValList RBRACE
+  public static boolean WaveformPrimItive(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "WaveformPrimItive")) return false;
+    if (!nextTokenIs(builder_, WAVEFORM)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeTokens(builder_, 0, WAVEFORM, LBRACE);
+    result_ = result_ && ValList(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACE);
+    exit_section_(builder_, marker_, WAVEFORM_PRIM_ITIVE, result_);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -984,13 +1271,13 @@ public class FaustParser implements PsiParser, LightPsiParser {
   // 19: BINARY(NeIfx)
   // 20: POSTFIX(ParenIfx)
   // 21: POSTFIX(BrackIfx)
-  // 22: ATOM(PrimitiveIfx)
+  // 22: ATOM(Primitive)
   public static boolean Infix(PsiBuilder builder_, int level_, int priority_) {
     if (!recursion_guard_(builder_, level_, "Infix")) return false;
     addVariant(builder_, "<infix>");
     boolean result_, pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<infix>");
-    result_ = PrimitiveIfx(builder_, level_ + 1);
+    result_ = Primitive(builder_, level_ + 1);
     pinned_ = result_;
     result_ = result_ && Infix_0(builder_, level_ + 1, priority_);
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
@@ -1122,7 +1409,9 @@ public class FaustParser implements PsiParser, LightPsiParser {
     return result_;
   }
 
-  // NUMBER
+  // IDENTIFIER
+  //     | SUB IDENTIFIER
+  //     | NUMBER
   //     | ADD NUMBER
   //     | SUB NUMBER
   //     | WIRE
@@ -1180,19 +1469,17 @@ public class FaustParser implements PsiParser, LightPsiParser {
   //     | ASSERTBOUNDS
   //     | LOWEST
   //     | HIGHEST
-  //     | IDENTIFIER
-  //     | SUB IDENTIFIER
   //     | LPAREN Expression RPAREN
   //     | LambdaAbstraction
   // //    | LBRACK ModList LAPPLY Expression RBRACK
   //     | PatternAbstraction
-  // //    | ForeignFunction
-  // //    | ForeignConstant
-  // //    | ForeignVariable
+  //     | ForeignFunction
+  //     | ForeignConstant
+  //     | ForeignVariable
   //     | COMPONENT LPAREN UqString RPAREN
   //     | LIBRARY LPAREN UqString RPAREN
   //     | EnvironmentConstruction
-  // //    | WAVEFORM LBRACE ValList RBRACE
+  //     | WaveformPrimItive
   //     | ROUTE LPAREN Argument PAR Argument RPAREN // Fake route?
   //     | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
   //     | UiButton
@@ -1206,17 +1493,16 @@ public class FaustParser implements PsiParser, LightPsiParser {
   //     | UiVbargraph
   //     | UiHbargraph
   //     | SoundfilePrim
-  //     | IterPar
-  //     | IterSeq
-  //     | IterSum
-  //     | IterProd
+  //     | Iteration
   //     | Inputs
   //     | Outputs
-  public static boolean PrimitiveIfx(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx")) return false;
+  public static boolean Primitive(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Primitive")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, PRIMITIVE_IFX, "<primitive ifx>");
-    result_ = consumeTokenSmart(builder_, NUMBER);
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, PRIMITIVE, "<primitive>");
+    result_ = consumeTokenSmart(builder_, IDENTIFIER);
+    if (!result_) result_ = parseTokensSmart(builder_, 0, SUB, IDENTIFIER);
+    if (!result_) result_ = consumeTokenSmart(builder_, NUMBER);
     if (!result_) result_ = parseTokensSmart(builder_, 0, ADD, NUMBER);
     if (!result_) result_ = parseTokensSmart(builder_, 0, SUB, NUMBER);
     if (!result_) result_ = consumeTokenSmart(builder_, WIRE);
@@ -1274,16 +1560,18 @@ public class FaustParser implements PsiParser, LightPsiParser {
     if (!result_) result_ = consumeTokenSmart(builder_, ASSERTBOUNDS);
     if (!result_) result_ = consumeTokenSmart(builder_, LOWEST);
     if (!result_) result_ = consumeTokenSmart(builder_, HIGHEST);
-    if (!result_) result_ = consumeTokenSmart(builder_, IDENTIFIER);
-    if (!result_) result_ = parseTokensSmart(builder_, 0, SUB, IDENTIFIER);
-    if (!result_) result_ = PrimitiveIfx_60(builder_, level_ + 1);
+    if (!result_) result_ = Primitive_60(builder_, level_ + 1);
     if (!result_) result_ = LambdaAbstraction(builder_, level_ + 1);
     if (!result_) result_ = PatternAbstraction(builder_, level_ + 1);
-    if (!result_) result_ = PrimitiveIfx_63(builder_, level_ + 1);
-    if (!result_) result_ = PrimitiveIfx_64(builder_, level_ + 1);
+    if (!result_) result_ = ForeignFunction(builder_, level_ + 1);
+    if (!result_) result_ = ForeignConstant(builder_, level_ + 1);
+    if (!result_) result_ = ForeignVariable(builder_, level_ + 1);
+    if (!result_) result_ = Primitive_66(builder_, level_ + 1);
+    if (!result_) result_ = Primitive_67(builder_, level_ + 1);
     if (!result_) result_ = EnvironmentConstruction(builder_, level_ + 1);
-    if (!result_) result_ = PrimitiveIfx_66(builder_, level_ + 1);
-    if (!result_) result_ = PrimitiveIfx_67(builder_, level_ + 1);
+    if (!result_) result_ = WaveformPrimItive(builder_, level_ + 1);
+    if (!result_) result_ = Primitive_70(builder_, level_ + 1);
+    if (!result_) result_ = Primitive_71(builder_, level_ + 1);
     if (!result_) result_ = UiButton(builder_, level_ + 1);
     if (!result_) result_ = UiCheckbox(builder_, level_ + 1);
     if (!result_) result_ = UiVslider(builder_, level_ + 1);
@@ -1295,10 +1583,7 @@ public class FaustParser implements PsiParser, LightPsiParser {
     if (!result_) result_ = UiVbargraph(builder_, level_ + 1);
     if (!result_) result_ = UiHbargraph(builder_, level_ + 1);
     if (!result_) result_ = SoundfilePrim(builder_, level_ + 1);
-    if (!result_) result_ = IterPar(builder_, level_ + 1);
-    if (!result_) result_ = IterSeq(builder_, level_ + 1);
-    if (!result_) result_ = IterSum(builder_, level_ + 1);
-    if (!result_) result_ = IterProd(builder_, level_ + 1);
+    if (!result_) result_ = Iteration(builder_, level_ + 1);
     if (!result_) result_ = Inputs(builder_, level_ + 1);
     if (!result_) result_ = Outputs(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, result_, false, null);
@@ -1306,8 +1591,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // LPAREN Expression RPAREN
-  private static boolean PrimitiveIfx_60(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_60")) return false;
+  private static boolean Primitive_60(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Primitive_60")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokenSmart(builder_, LPAREN);
@@ -1318,8 +1603,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // COMPONENT LPAREN UqString RPAREN
-  private static boolean PrimitiveIfx_63(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_63")) return false;
+  private static boolean Primitive_66(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Primitive_66")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, COMPONENT, LPAREN);
@@ -1330,8 +1615,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // LIBRARY LPAREN UqString RPAREN
-  private static boolean PrimitiveIfx_64(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_64")) return false;
+  private static boolean Primitive_67(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Primitive_67")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, LIBRARY, LPAREN);
@@ -1342,8 +1627,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // ROUTE LPAREN Argument PAR Argument RPAREN
-  private static boolean PrimitiveIfx_66(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_66")) return false;
+  private static boolean Primitive_70(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Primitive_70")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, ROUTE, LPAREN);
@@ -1356,8 +1641,8 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   // ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
-  private static boolean PrimitiveIfx_67(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_67")) return false;
+  private static boolean Primitive_71(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "Primitive_71")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokensSmart(builder_, 0, ROUTE, LPAREN);

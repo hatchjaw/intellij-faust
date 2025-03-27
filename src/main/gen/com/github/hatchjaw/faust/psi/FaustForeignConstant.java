@@ -5,12 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FaustDeclaration extends PsiElement {
+public interface FaustForeignConstant extends PsiElement {
 
   @NotNull
-  List<FaustDecName> getDecNameList();
+  FaustFstring getFstring();
 
   @NotNull
-  FaustString getString();
+  FaustType getType();
+
+  @NotNull
+  PsiElement getIdentifier();
 
 }

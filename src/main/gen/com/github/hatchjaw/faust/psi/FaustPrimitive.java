@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FaustPrimitiveIfx extends FaustInfix {
+public interface FaustPrimitive extends FaustInfix {
 
   @NotNull
   List<FaustArgument> getArgumentList();
@@ -17,19 +17,19 @@ public interface FaustPrimitiveIfx extends FaustInfix {
   FaustExpression getExpression();
 
   @Nullable
+  FaustForeignConstant getForeignConstant();
+
+  @Nullable
+  FaustForeignFunction getForeignFunction();
+
+  @Nullable
+  FaustForeignVariable getForeignVariable();
+
+  @Nullable
   FaustInputs getInputs();
 
   @Nullable
-  FaustIterPar getIterPar();
-
-  @Nullable
-  FaustIterProd getIterProd();
-
-  @Nullable
-  FaustIterSeq getIterSeq();
-
-  @Nullable
-  FaustIterSum getIterSum();
+  FaustIteration getIteration();
 
   @Nullable
   FaustLambdaAbstraction getLambdaAbstraction();
@@ -75,6 +75,9 @@ public interface FaustPrimitiveIfx extends FaustInfix {
 
   @Nullable
   FaustUqString getUqString();
+
+  @Nullable
+  FaustWaveformPrimItive getWaveformPrimItive();
 
   @Nullable
   PsiElement getIdentifier();

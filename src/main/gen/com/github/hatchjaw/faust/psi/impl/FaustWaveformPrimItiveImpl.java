@@ -11,14 +11,14 @@ import static com.github.hatchjaw.faust.psi.FaustTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.hatchjaw.faust.psi.*;
 
-public class FaustDeclarationImpl extends ASTWrapperPsiElement implements FaustDeclaration {
+public class FaustWaveformPrimItiveImpl extends ASTWrapperPsiElement implements FaustWaveformPrimItive {
 
-  public FaustDeclarationImpl(@NotNull ASTNode node) {
+  public FaustWaveformPrimItiveImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FaustVisitor visitor) {
-    visitor.visitDeclaration(this);
+    visitor.visitWaveformPrimItive(this);
   }
 
   @Override
@@ -29,14 +29,8 @@ public class FaustDeclarationImpl extends ASTWrapperPsiElement implements FaustD
 
   @Override
   @NotNull
-  public List<FaustDecName> getDecNameList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustDecName.class);
-  }
-
-  @Override
-  @NotNull
-  public FaustString getString() {
-    return findNotNullChildByClass(FaustString.class);
+  public FaustValList getValList() {
+    return findNotNullChildByClass(FaustValList.class);
   }
 
 }

@@ -11,38 +11,20 @@ import static com.github.hatchjaw.faust.psi.FaustTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.hatchjaw.faust.psi.*;
 
-public class FaustIterProdImpl extends ASTWrapperPsiElement implements FaustIterProd {
+public class FaustTypeImpl extends ASTWrapperPsiElement implements FaustType {
 
-  public FaustIterProdImpl(@NotNull ASTNode node) {
+  public FaustTypeImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull FaustVisitor visitor) {
-    visitor.visitIterProd(this);
+    visitor.visitType(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof FaustVisitor) accept((FaustVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public FaustArgument getArgument() {
-    return findNotNullChildByClass(FaustArgument.class);
-  }
-
-  @Override
-  @NotNull
-  public FaustExpression getExpression() {
-    return findNotNullChildByClass(FaustExpression.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
   }
 
 }

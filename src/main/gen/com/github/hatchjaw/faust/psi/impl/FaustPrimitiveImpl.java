@@ -10,15 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.hatchjaw.faust.psi.FaustTypes.*;
 import com.github.hatchjaw.faust.psi.*;
 
-public class FaustPrimitiveIfxImpl extends FaustInfixImpl implements FaustPrimitiveIfx {
+public class FaustPrimitiveImpl extends FaustInfixImpl implements FaustPrimitive {
 
-  public FaustPrimitiveIfxImpl(@NotNull ASTNode node) {
+  public FaustPrimitiveImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull FaustVisitor visitor) {
-    visitor.visitPrimitiveIfx(this);
+    visitor.visitPrimitive(this);
   }
 
   @Override
@@ -47,32 +47,32 @@ public class FaustPrimitiveIfxImpl extends FaustInfixImpl implements FaustPrimit
 
   @Override
   @Nullable
+  public FaustForeignConstant getForeignConstant() {
+    return findChildByClass(FaustForeignConstant.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustForeignFunction getForeignFunction() {
+    return findChildByClass(FaustForeignFunction.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustForeignVariable getForeignVariable() {
+    return findChildByClass(FaustForeignVariable.class);
+  }
+
+  @Override
+  @Nullable
   public FaustInputs getInputs() {
     return findChildByClass(FaustInputs.class);
   }
 
   @Override
   @Nullable
-  public FaustIterPar getIterPar() {
-    return findChildByClass(FaustIterPar.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustIterProd getIterProd() {
-    return findChildByClass(FaustIterProd.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustIterSeq getIterSeq() {
-    return findChildByClass(FaustIterSeq.class);
-  }
-
-  @Override
-  @Nullable
-  public FaustIterSum getIterSum() {
-    return findChildByClass(FaustIterSum.class);
+  public FaustIteration getIteration() {
+    return findChildByClass(FaustIteration.class);
   }
 
   @Override
@@ -163,6 +163,12 @@ public class FaustPrimitiveIfxImpl extends FaustInfixImpl implements FaustPrimit
   @Nullable
   public FaustUqString getUqString() {
     return findChildByClass(FaustUqString.class);
+  }
+
+  @Override
+  @Nullable
+  public FaustWaveformPrimItive getWaveformPrimItive() {
+    return findChildByClass(FaustWaveformPrimItive.class);
   }
 
   @Override

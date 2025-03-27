@@ -5,15 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FaustIterSum extends PsiElement {
+public interface FaustFstring extends PsiElement {
 
-  @NotNull
-  FaustArgument getArgument();
+  @Nullable
+  PsiElement getCHeader();
 
-  @NotNull
-  FaustExpression getExpression();
-
-  @NotNull
-  PsiElement getIdentifier();
+  @Nullable
+  PsiElement getStringLiteral();
 
 }

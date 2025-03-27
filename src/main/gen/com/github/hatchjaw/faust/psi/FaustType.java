@@ -5,15 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface FaustIterSeq extends PsiElement {
-
-  @NotNull
-  FaustArgument getArgument();
-
-  @NotNull
-  FaustExpression getExpression();
-
-  @NotNull
-  PsiElement getIdentifier();
+public interface FaustType extends PsiElement {
 
 }
