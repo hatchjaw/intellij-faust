@@ -34,27 +34,15 @@ public class FaustPrimitiveIfxImpl extends FaustInfixImpl implements FaustPrimit
   }
 
   @Override
-  @NotNull
-  public List<FaustDeclaration> getDeclarationList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustDeclaration.class);
-  }
-
-  @Override
-  @NotNull
-  public List<FaustDefinition> getDefinitionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustDefinition.class);
+  @Nullable
+  public FaustEnvironmentConstruction getEnvironmentConstruction() {
+    return findChildByClass(FaustEnvironmentConstruction.class);
   }
 
   @Override
   @Nullable
   public FaustExpression getExpression() {
     return findChildByClass(FaustExpression.class);
-  }
-
-  @Override
-  @NotNull
-  public List<FaustFileImport> getFileImportList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustFileImport.class);
   }
 
   @Override
@@ -101,8 +89,8 @@ public class FaustPrimitiveIfxImpl extends FaustInfixImpl implements FaustPrimit
 
   @Override
   @Nullable
-  public FaustRuleList getRuleList() {
-    return findChildByClass(FaustRuleList.class);
+  public FaustPatternAbstraction getPatternAbstraction() {
+    return findChildByClass(FaustPatternAbstraction.class);
   }
 
   @Override
@@ -175,12 +163,6 @@ public class FaustPrimitiveIfxImpl extends FaustInfixImpl implements FaustPrimit
   @Nullable
   public FaustUqString getUqString() {
     return findChildByClass(FaustUqString.class);
-  }
-
-  @Override
-  @NotNull
-  public List<FaustVariant> getVariantList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, FaustVariant.class);
   }
 
   @Override

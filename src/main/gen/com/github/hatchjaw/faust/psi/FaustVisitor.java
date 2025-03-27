@@ -55,6 +55,10 @@ public class FaustVisitor extends PsiElementVisitor {
     visitInfix(o);
   }
 
+  public void visitEnvironmentConstruction(@NotNull FaustEnvironmentConstruction o) {
+    visitPsiElement(o);
+  }
+
   public void visitEqIfx(@NotNull FaustEqIfx o) {
     visitInfix(o);
   }
@@ -177,6 +181,10 @@ public class FaustVisitor extends PsiElementVisitor {
 
   public void visitParenIfx(@NotNull FaustParenIfx o) {
     visitInfix(o);
+  }
+
+  public void visitPatternAbstraction(@NotNull FaustPatternAbstraction o) {
+    visitPsiElement(o);
   }
 
   public void visitPowIfx(@NotNull FaustPowIfx o) {

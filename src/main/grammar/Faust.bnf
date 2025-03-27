@@ -160,7 +160,7 @@
         WHITE_SPACE='regexp:[ \t\r\n]+'
         IDENTIFIER='regexp:(::)?_*[a-zA-Z]\w*(::_*[a-zA-Z]\w*)*'
         STRING_LITERAL="regexp:\"[^\"]*\""
-        DOC_COMMENT="regexp:(//-+`[^`]+`-+[\r\n])(//.*[\r\n])*?(//-+\R)"
+        DOC_COMMENT="regexp:(//-+`[^`]+`-+[\r\n])(//.*[\r\n]|[\r\n])*?(//-+\R)"
         LINE_COMMENT='regexp://[^\r\n]*'
         BLOCK_COMMENT="regexp:/\*(([^*]|[\r\n])*(\*+[^*/])?)*(\*+/)?"
         NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'
@@ -343,13 +343,13 @@ PrimitiveIfx ::=
     | LPAREN Expression RPAREN
     | LambdaAbstraction
 //    | LBRACK ModList LAPPLY Expression RBRACK
-    | CASE LBRACE RuleList RBRACE
+    | PatternAbstraction
 //    | ForeignFunction
 //    | ForeignConstant
 //    | ForeignVariable
     | COMPONENT LPAREN UqString RPAREN
     | LIBRARY LPAREN UqString RPAREN
-    | ENVIRONMENT LBRACE StmtList RBRACE
+    | EnvironmentConstruction
 //    | WAVEFORM LBRACE ValList RBRACE
     | ROUTE LPAREN Argument PAR Argument RPAREN // Fake route?
     | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
@@ -371,7 +371,11 @@ PrimitiveIfx ::=
     | Inputs
     | Outputs
 
+PatternAbstraction ::= CASE LBRACE RuleList RBRACE
+
 LambdaAbstraction ::= LAMBDA LPAREN Params RPAREN DOT LPAREN Expression RPAREN
+
+EnvironmentConstruction ::= ENVIRONMENT LBRACE StmtList RBRACE
 
 Ident ::= IDENTIFIER
 

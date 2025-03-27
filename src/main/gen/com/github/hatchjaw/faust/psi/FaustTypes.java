@@ -20,6 +20,7 @@ public interface FaustTypes {
   IElementType DELAY_1_IFX = new FaustElementType("DELAY_1_IFX");
   IElementType DELAY_IFX = new FaustElementType("DELAY_IFX");
   IElementType DIV_IFX = new FaustElementType("DIV_IFX");
+  IElementType ENVIRONMENT_CONSTRUCTION = new FaustElementType("ENVIRONMENT_CONSTRUCTION");
   IElementType EQ_IFX = new FaustElementType("EQ_IFX");
   IElementType EXPRESSION = new FaustElementType("EXPRESSION");
   IElementType FILE_IMPORT = new FaustElementType("FILE_IMPORT");
@@ -51,6 +52,7 @@ public interface FaustTypes {
   IElementType PARALLEL_COMP = new FaustElementType("PARALLEL_COMP");
   IElementType PARAMS = new FaustElementType("PARAMS");
   IElementType PAREN_IFX = new FaustElementType("PAREN_IFX");
+  IElementType PATTERN_ABSTRACTION = new FaustElementType("PATTERN_ABSTRACTION");
   IElementType POW_IFX = new FaustElementType("POW_IFX");
   IElementType PRIMITIVE_IFX = new FaustElementType("PRIMITIVE_IFX");
   IElementType RECURSIVE_COMP = new FaustElementType("RECURSIVE_COMP");
@@ -236,6 +238,9 @@ public interface FaustTypes {
       else if (type == DIV_IFX) {
         return new FaustDivIfxImpl(node);
       }
+      else if (type == ENVIRONMENT_CONSTRUCTION) {
+        return new FaustEnvironmentConstructionImpl(node);
+      }
       else if (type == EQ_IFX) {
         return new FaustEqIfxImpl(node);
       }
@@ -322,6 +327,9 @@ public interface FaustTypes {
       }
       else if (type == PAREN_IFX) {
         return new FaustParenIfxImpl(node);
+      }
+      else if (type == PATTERN_ABSTRACTION) {
+        return new FaustPatternAbstractionImpl(node);
       }
       else if (type == POW_IFX) {
         return new FaustPowIfxImpl(node);

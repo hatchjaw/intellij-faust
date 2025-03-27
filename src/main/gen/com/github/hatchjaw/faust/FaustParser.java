@@ -202,6 +202,20 @@ public class FaustParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // ENVIRONMENT LBRACE StmtList RBRACE
+  public static boolean EnvironmentConstruction(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "EnvironmentConstruction")) return false;
+    if (!nextTokenIs(builder_, ENVIRONMENT)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeTokens(builder_, 0, ENVIRONMENT, LBRACE);
+    result_ = result_ && StmtList(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACE);
+    exit_section_(builder_, marker_, ENVIRONMENT_CONSTRUCTION, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // IMPORT LPAREN UqString RPAREN ENDDEF
   public static boolean FileImport(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "FileImport")) return false;
@@ -378,6 +392,20 @@ public class FaustParser implements PsiParser, LightPsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = consumeTokens(builder_, 0, IDENTIFIER, PAR);
     exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // CASE LBRACE RuleList RBRACE
+  public static boolean PatternAbstraction(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "PatternAbstraction")) return false;
+    if (!nextTokenIs(builder_, CASE)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeTokens(builder_, 0, CASE, LBRACE);
+    result_ = result_ && RuleList(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACE);
+    exit_section_(builder_, marker_, PATTERN_ABSTRACTION, result_);
     return result_;
   }
 
@@ -1157,13 +1185,13 @@ public class FaustParser implements PsiParser, LightPsiParser {
   //     | LPAREN Expression RPAREN
   //     | LambdaAbstraction
   // //    | LBRACK ModList LAPPLY Expression RBRACK
-  //     | CASE LBRACE RuleList RBRACE
+  //     | PatternAbstraction
   // //    | ForeignFunction
   // //    | ForeignConstant
   // //    | ForeignVariable
   //     | COMPONENT LPAREN UqString RPAREN
   //     | LIBRARY LPAREN UqString RPAREN
-  //     | ENVIRONMENT LBRACE StmtList RBRACE
+  //     | EnvironmentConstruction
   // //    | WAVEFORM LBRACE ValList RBRACE
   //     | ROUTE LPAREN Argument PAR Argument RPAREN // Fake route?
   //     | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
@@ -1250,10 +1278,10 @@ public class FaustParser implements PsiParser, LightPsiParser {
     if (!result_) result_ = parseTokensSmart(builder_, 0, SUB, IDENTIFIER);
     if (!result_) result_ = PrimitiveIfx_60(builder_, level_ + 1);
     if (!result_) result_ = LambdaAbstraction(builder_, level_ + 1);
-    if (!result_) result_ = PrimitiveIfx_62(builder_, level_ + 1);
+    if (!result_) result_ = PatternAbstraction(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_63(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_64(builder_, level_ + 1);
-    if (!result_) result_ = PrimitiveIfx_65(builder_, level_ + 1);
+    if (!result_) result_ = EnvironmentConstruction(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_66(builder_, level_ + 1);
     if (!result_) result_ = PrimitiveIfx_67(builder_, level_ + 1);
     if (!result_) result_ = UiButton(builder_, level_ + 1);
@@ -1289,18 +1317,6 @@ public class FaustParser implements PsiParser, LightPsiParser {
     return result_;
   }
 
-  // CASE LBRACE RuleList RBRACE
-  private static boolean PrimitiveIfx_62(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_62")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeTokensSmart(builder_, 0, CASE, LBRACE);
-    result_ = result_ && RuleList(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, RBRACE);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
   // COMPONENT LPAREN UqString RPAREN
   private static boolean PrimitiveIfx_63(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "PrimitiveIfx_63")) return false;
@@ -1321,18 +1337,6 @@ public class FaustParser implements PsiParser, LightPsiParser {
     result_ = consumeTokensSmart(builder_, 0, LIBRARY, LPAREN);
     result_ = result_ && UqString(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RPAREN);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // ENVIRONMENT LBRACE StmtList RBRACE
-  private static boolean PrimitiveIfx_65(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "PrimitiveIfx_65")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeTokensSmart(builder_, 0, ENVIRONMENT, LBRACE);
-    result_ = result_ && StmtList(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, RBRACE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

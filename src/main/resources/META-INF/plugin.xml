@@ -31,6 +31,10 @@
         <lang.commenter
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.FaustCommenter"/>
+
+        <lang.foldingBuilder
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.FaustFoldingBuilder"/>
     </extensions>
 
     <applicationListeners>

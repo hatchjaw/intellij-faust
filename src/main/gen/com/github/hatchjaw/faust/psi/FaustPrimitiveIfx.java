@@ -10,17 +10,11 @@ public interface FaustPrimitiveIfx extends FaustInfix {
   @NotNull
   List<FaustArgument> getArgumentList();
 
-  @NotNull
-  List<FaustDeclaration> getDeclarationList();
-
-  @NotNull
-  List<FaustDefinition> getDefinitionList();
+  @Nullable
+  FaustEnvironmentConstruction getEnvironmentConstruction();
 
   @Nullable
   FaustExpression getExpression();
-
-  @NotNull
-  List<FaustFileImport> getFileImportList();
 
   @Nullable
   FaustInputs getInputs();
@@ -44,7 +38,7 @@ public interface FaustPrimitiveIfx extends FaustInfix {
   FaustOutputs getOutputs();
 
   @Nullable
-  FaustRuleList getRuleList();
+  FaustPatternAbstraction getPatternAbstraction();
 
   @Nullable
   FaustSoundfilePrim getSoundfilePrim();
@@ -81,9 +75,6 @@ public interface FaustPrimitiveIfx extends FaustInfix {
 
   @Nullable
   FaustUqString getUqString();
-
-  @NotNull
-  List<FaustVariant> getVariantList();
 
   @Nullable
   PsiElement getIdentifier();
