@@ -161,7 +161,8 @@
         IDENTIFIER='regexp:(::)?_*[a-zA-Z]\w*(::_*[a-zA-Z]\w*)*'
         STRING_LITERAL="regexp:\"[^\"]*\""
         C_HEADER = "regexp:<\w+(\.[a-zA-Z])?>"
-        DOC_COMMENT="regexp:(//-+?[^-]+-+[\r\n])(//.*[\r\n]|[\r\n])*?(//-+\R)" // Dodgy
+        LIB_DOC_COMMENT="regexp:(//#+([^#]+?)#+[\r\n])(//.*[\r\n])+"
+        DEF_DOC_COMMENT="regexp:(//-+`([^-]+?)`-+[\r\n])(//.*[\r\n])+"
         LINE_COMMENT='regexp://[^\r\n]*'
         BLOCK_COMMENT="regexp:/\*(([^*]|[\r\n])*(\*+[^*/])?)*(\*+/)?"
         NUMBER='regexp:(\d+(\.\d*)?|(\.\d+))([eE][+-]?\d+)?f?'

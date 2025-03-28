@@ -22,7 +22,7 @@ class FaustCommenter : CodeDocumentationAwareCommenter {
 
     override fun getBlockCommentTokenType(): IElementType? = FaustTypes.BLOCK_COMMENT
 
-    override fun getDocumentationCommentTokenType(): IElementType? = FaustTypes.DOC_COMMENT
+    override fun getDocumentationCommentTokenType(): IElementType? = FaustTypes.DEF_DOC_COMMENT
 
     override fun getDocumentationCommentPrefix(): String? = null
 

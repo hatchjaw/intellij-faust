@@ -22,8 +22,8 @@ class FaustSyntaxHighlighter : SyntaxHighlighterBase() {
             when (tokenType) {
                 LINE_COMMENT -> DefaultColor.LINE_COMMENT
                 BLOCK_COMMENT -> DefaultColor.BLOCK_COMMENT
-                DOC_COMMENT -> DefaultColor.DOC_COMMENT
-                STRING_LITERAL, UQ_STRING, STRING -> DefaultColor.STRING
+                in FaustParserUtil.FAUST_DOC_COMMENTS -> DefaultColor.DOC_COMMENT
+                in FaustParserUtil.FAUST_STRINGS -> DefaultColor.STRING
                 ENDDEF -> DefaultColor.SEMICOLON
                 NUMBER -> DefaultColor.NUMBER
                 IDENTIFIER -> DefaultColor.IDENTIFIER
@@ -31,7 +31,7 @@ class FaustSyntaxHighlighter : SyntaxHighlighterBase() {
                 LPAREN, RPAREN -> DefaultColor.PARENTHESES
                 LBRACE, RBRACE -> DefaultColor.BRACES
                 LBRACK, RBRACK -> DefaultColor.BRACKETS
-                in FaustParserUtil.KEYWORDS -> DefaultColor.KEYWORD
+                in FaustParserUtil.FAUST_KEYWORDS -> DefaultColor.KEYWORD
                 TokenType.BAD_CHARACTER -> HighlighterColors.BAD_CHARACTER
                 else -> null
             }

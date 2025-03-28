@@ -3,7 +3,7 @@ package com.github.hatchjaw.faust
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-object FaustDSPFileType : LanguageFileType(FaustLanguage.INSTANCE) {
+object FaustDSPFileType : LanguageFileType(FaustLanguage) {
     override fun getName(): String = "Faust DSP"
     override fun getDescription(): String = FaustBundle.message("faust.dsp.file.type.description")
     override fun getDefaultExtension(): String = "dsp"
@@ -11,7 +11,7 @@ object FaustDSPFileType : LanguageFileType(FaustLanguage.INSTANCE) {
     override fun getDisplayName(): String = FaustBundle.message("faust.dsp.file.type.display.name")
 }
 
-object FaustLibFileType : LanguageFileType(FaustLanguage.INSTANCE) {
+object FaustLibFileType : LanguageFileType(FaustLanguage) {
     override fun getName(): String = "Faust Library"
     override fun getDescription(): String = FaustBundle.message("faust.lib.file.type.description")
     override fun getDefaultExtension(): String = "lib"

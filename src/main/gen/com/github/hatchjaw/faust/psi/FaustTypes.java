@@ -113,10 +113,10 @@ public interface FaustTypes {
   IElementType C_HEADER = new FaustTokenType("C_HEADER");
   IElementType DECLARE = new FaustTokenType("declare");
   IElementType DEF = new FaustTokenType("=");
+  IElementType DEF_DOC_COMMENT = new FaustTokenType("DEF_DOC_COMMENT");
   IElementType DELAY = new FaustTokenType("@");
   IElementType DELAY1 = new FaustTokenType("'");
   IElementType DIV = new FaustTokenType("/");
-  IElementType DOC_COMMENT = new FaustTokenType("DOC_COMMENT");
   IElementType DOT = new FaustTokenType(".");
   IElementType DOUBLEMODE = new FaustTokenType("doubleprecision");
   IElementType ENABLE = new FaustTokenType("enable");
@@ -153,6 +153,7 @@ public interface FaustTypes {
   IElementType LE = new FaustTokenType("<=");
   IElementType LETREC = new FaustTokenType("letrec");
   IElementType LIBRARY = new FaustTokenType("library");
+  IElementType LIB_DOC_COMMENT = new FaustTokenType("LIB_DOC_COMMENT");
   IElementType LINE_COMMENT = new FaustTokenType("LINE_COMMENT");
   IElementType LOG = new FaustTokenType("log");
   IElementType LOG10 = new FaustTokenType("log10");

@@ -11,7 +11,7 @@ import com.intellij.psi.ResolveState
 import com.intellij.psi.scope.PsiScopeProcessor
 
 
-class FaustFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, FaustLanguage.INSTANCE) {
+class FaustFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, FaustLanguage) {
     override fun getFileType(): FileType = FaustDSPFileType
 
     override fun toString(): String = "Faust File"

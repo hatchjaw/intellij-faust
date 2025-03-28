@@ -29,7 +29,8 @@ WHITE_SPACE=[ \t\r\n]+
 IDENTIFIER=(::)?_*[a-zA-Z][a-zA-Z_0-9]*(::_*[a-zA-Z][a-zA-Z_0-9]*)*
 STRING_LITERAL=\"[^\"]*\"
 C_HEADER=<[a-zA-Z_0-9]+(\.[a-zA-Z])?>
-DOC_COMMENT=("//"-+?[^-]+-+[\r\n])("//".*[\r\n]|[\r\n])*?("//"-+\R)
+LIB_DOC_COMMENT=("//"#+([^#]+?)#+[\r\n])("//".*[\r\n])+
+DEF_DOC_COMMENT=("//"-+`([^-]+?)`-+[\r\n])("//".*[\r\n])+
 LINE_COMMENT="//"[^\r\n]*
 BLOCK_COMMENT="/"\*(([^*]|[\r\n])*(\*+[^*/])?)*(\*+"/")?
 NUMBER=([0-9]+(\.[0-9]*)?|(\.[0-9]+))([eE][+-]?[0-9]+)?f?
@@ -154,7 +155,8 @@ NUMBER=([0-9]+(\.[0-9]*)?|(\.[0-9]+))([eE][+-]?[0-9]+)?f?
   {IDENTIFIER}                { return IDENTIFIER; }
   {STRING_LITERAL}            { return STRING_LITERAL; }
   {C_HEADER}                  { return C_HEADER; }
-  {DOC_COMMENT}               { return DOC_COMMENT; }
+  {LIB_DOC_COMMENT}           { return LIB_DOC_COMMENT; }
+  {DEF_DOC_COMMENT}           { return DEF_DOC_COMMENT; }
   {LINE_COMMENT}              { return LINE_COMMENT; }
   {BLOCK_COMMENT}             { return BLOCK_COMMENT; }
   {NUMBER}                    { return NUMBER; }

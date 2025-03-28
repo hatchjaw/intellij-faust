@@ -28,7 +28,8 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             is FaustParallelComp -> "..."
 
             is PsiComment -> when (node.psi.elementType) {
-                DOC_COMMENT -> "//-- ... --"
+                LIB_DOC_COMMENT -> "//## ${Regex("#+ (.*?) #+").find(node.text)?.groupValues?.get(1) ?: "..."} ##"
+                DEF_DOC_COMMENT -> "//-- ${Regex("-+(`.*?`)-+").find(node.text)?.groupValues?.get(1) ?: "..."} --"
                 else -> "/* ... */"
             }
 
@@ -91,7 +92,7 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         override fun visitComment(comment: PsiComment) {
             when (comment.tokenType) {
                 BLOCK_COMMENT -> fold(comment)
-                DOC_COMMENT -> descriptors += FoldingDescriptor(
+                in FaustParserUtil.FAUST_DOC_COMMENTS -> descriptors += FoldingDescriptor(
                     comment.node,
                     TextRange(comment.startOffset, comment.endOffset - 1)
                 )

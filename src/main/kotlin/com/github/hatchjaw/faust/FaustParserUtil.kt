@@ -6,7 +6,7 @@ import com.intellij.psi.tree.TokenSet
 
 class FaustParserUtil : GeneratedParserUtilBase() {
     companion object {
-        val KEYWORDS: TokenSet = TokenSet.create(
+        val FAUST_KEYWORDS: TokenSet = TokenSet.create(
             CASE,
             ENVIRONMENT,
             LETREC,
@@ -16,10 +16,25 @@ class FaustParserUtil : GeneratedParserUtilBase() {
             IMPORT,
             DECLARE,
             COMPONENT,
-//            IPAR,
-//            ISEQ,
-//            ISUM,
-//            IPROD,
+        )
+
+        val FAUST_STRINGS: TokenSet = TokenSet.create(
+            STRING_LITERAL
+        )
+
+        val FAUST_REGULAR_COMMENTS: TokenSet = TokenSet.create(
+            LINE_COMMENT,
+            BLOCK_COMMENT,
+        )
+
+        val FAUST_DOC_COMMENTS: TokenSet = TokenSet.create(
+            LIB_DOC_COMMENT,
+            DEF_DOC_COMMENT,
+        )
+
+        val FAUST_COMMENTS: TokenSet = TokenSet.orSet(
+            FAUST_REGULAR_COMMENTS,
+            FAUST_DOC_COMMENTS,
         )
     }
 }

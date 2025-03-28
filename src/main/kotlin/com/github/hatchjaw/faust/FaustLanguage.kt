@@ -2,10 +2,9 @@ package com.github.hatchjaw.faust
 
 import com.intellij.lang.Language
 
-class FaustLanguage private constructor() : Language("Faust") {
-    companion object {
-        val INSTANCE = FaustLanguage()
-    }
+object FaustLanguage : Language("Faust") {
 
-    override fun isCaseSensitive(): Boolean = true
+    private fun readResolve(): Any = FaustLanguage
+
+    override fun isCaseSensitive() = true
 }
