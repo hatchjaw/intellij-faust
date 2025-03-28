@@ -3,4 +3,4 @@
 .intellijPlatform
 .qodana
 build
-gen
+src/main/gen

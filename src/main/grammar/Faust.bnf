@@ -124,10 +124,10 @@
         RINT='rint'
         ROUND='round'
 
-        ISEQ='seq'
-        IPAR='par'
-        ISUM='sum'
-        IPROD='prod'
+        ITER_SEQ='seq'
+        ITER_PAR='par'
+        ITER_SUM='sum'
+        ITER_PROD='prod'
 
         INS='inputs'
         OUTS='outputs'
@@ -197,7 +197,7 @@ FileImport ::= IMPORT LPAREN UqString RPAREN ENDDEF
 
 Declaration ::=
       DECLARE DecName String ENDDEF
-    | DECLARE DecName DecName String ENDDEF
+    | DECLARE DefName DecName String ENDDEF
 
 Definition ::=
       DefName LPAREN ArgList RPAREN DEF Expression ENDDEF
@@ -353,7 +353,7 @@ Primitive ::=
     | COMPONENT LPAREN UqString RPAREN
     | LIBRARY LPAREN UqString RPAREN
     | EnvironmentConstruction
-    | WaveformPrimItive
+    | WaveformPrimitive
     | ROUTE LPAREN Argument PAR Argument RPAREN // Fake route?
     | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
     | UiButton
@@ -379,7 +379,7 @@ LambdaAbstraction ::= LAMBDA LPAREN Params RPAREN DOT LPAREN Expression RPAREN
 
 EnvironmentConstruction ::= ENVIRONMENT LBRACE StmtList RBRACE
 
-WaveformPrimItive ::= WAVEFORM LBRACE ValList RBRACE
+WaveformPrimitive ::= WAVEFORM LBRACE ValList RBRACE
 
 Ident ::= IDENTIFIER
 
@@ -406,7 +406,7 @@ UqString ::= STRING_LITERAL
 
 Fstring ::= STRING_LITERAL | C_HEADER
 
-Iteration ::= (IPAR | ISEQ | ISUM | IPROD) LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+Iteration ::= (ITER_PAR | ITER_SEQ | ITER_SUM | ITER_PROD) LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
 
 Inputs ::= INS LPAREN Expression RPAREN
 Outputs ::= OUTS LPAREN Expression RPAREN

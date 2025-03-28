@@ -124,10 +124,10 @@ NUMBER=([0-9]+(\.[0-9]*)?|(\.[0-9]+))([eE][+-]?[0-9]+)?f?
   "ceil"                      { return CEIL; }
   "rint"                      { return RINT; }
   "round"                     { return ROUND; }
-  "seq"                       { return ISEQ; }
-  "par"                       { return IPAR; }
-  "sum"                       { return ISUM; }
-  "prod"                      { return IPROD; }
+  "seq"                       { return ITER_SEQ; }
+  "par"                       { return ITER_PAR; }
+  "sum"                       { return ITER_SUM; }
+  "prod"                      { return ITER_PROD; }
   "inputs"                    { return INS; }
   "outputs"                   { return OUTS; }
   "import"                    { return IMPORT; }

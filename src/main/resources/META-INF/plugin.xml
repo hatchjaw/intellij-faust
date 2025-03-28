@@ -28,6 +28,10 @@
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.FaustSyntaxHighlighterFactory"/>
 
+        <annotator
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.FaustAnnotator"/>
+
         <lang.commenter
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.FaustCommenter"/>

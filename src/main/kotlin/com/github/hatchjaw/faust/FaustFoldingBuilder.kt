@@ -79,7 +79,7 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             descriptors += FoldingDescriptor(o.node, TextRange(start, end))
         }
 
-        override fun visitWaveformPrimItive(o: FaustWaveformPrimItive) {
+        override fun visitWaveformPrimitive(o: FaustWaveformPrimitive) {
             val start = o.firstChild.endOffset
             val end = o.lastChild.endOffset
             descriptors += FoldingDescriptor(o.node, TextRange(start, end))
