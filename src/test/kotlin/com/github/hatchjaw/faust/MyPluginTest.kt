@@ -8,7 +8,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PsiErrorElementUtil
 import com.github.hatchjaw.faust.services.MyProjectService
 
-@TestDataPath("\$CONTENT_ROOT/src/test/testData")
+@TestDataPath("\$CONTENT_ROOT/testData")
 class MyPluginTest : BasePlatformTestCase() {
 
     fun testXMLFile() {
