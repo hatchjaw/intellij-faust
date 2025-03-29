@@ -9,7 +9,6 @@ object FaustParserUtil : GeneratedParserUtilBase() {
     @JvmStatic
     fun parseDocFreeText(builder: PsiBuilder, level: Int): Boolean {
         val tokenType = builder.tokenType
-        val tokenText = builder.tokenText
         val result = when (tokenType) {
             in FAUST_DOCUMENTATION_TAGS -> false
 
@@ -17,9 +16,7 @@ object FaustParserUtil : GeneratedParserUtilBase() {
         }
 
         if (result) {
-            val mark = builder.mark()
-            builder.advanceLexer()
-            mark.collapse(FAUST_DOCUMENTATION_FREE_TEXT)
+            consumeToken(builder, tokenType)
         }
 
         return result

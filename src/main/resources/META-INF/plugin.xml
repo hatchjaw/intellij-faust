@@ -39,6 +39,10 @@
         <lang.foldingBuilder
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.FaustFoldingBuilder"/>
+
+        <lang.braceMatcher
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.FaustPairedBraceMatcher"/>
     </extensions>
 
     <applicationListeners>

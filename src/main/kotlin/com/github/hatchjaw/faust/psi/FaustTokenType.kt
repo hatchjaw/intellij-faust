@@ -7,8 +7,6 @@ import com.intellij.psi.tree.TokenSet
 
 class FaustTokenType(debugName: String) : IElementType(debugName, FaustLanguage)
 
-val FAUST_DOCUMENTATION_FREE_TEXT: IElementType = FaustTokenType("FREE_TEXT")
-
 val FAUST_KEYWORDS: TokenSet = TokenSet.create(
     CASE,
     ENVIRONMENT,
