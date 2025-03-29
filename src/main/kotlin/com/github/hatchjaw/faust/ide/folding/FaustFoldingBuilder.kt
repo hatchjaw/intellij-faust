@@ -1,5 +1,7 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.ide.folding
 
+import com.github.hatchjaw.faust.lang.psi.FAUST_DOC_COMMENTS
+import com.github.hatchjaw.faust.lang.psi.FaustFile
 import com.github.hatchjaw.faust.psi.*
 import com.github.hatchjaw.faust.psi.FaustTypes.*
 import com.intellij.lang.ASTNode

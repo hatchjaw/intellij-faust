@@ -15,34 +15,38 @@
 
         <fileType
                 name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
-                implementationClass="com.github.hatchjaw.faust.FaustDSPFileType"/>
+                implementationClass="com.github.hatchjaw.faust.lang.FaustDSPFileType"/>
         <fileType
                 name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
-                implementationClass="com.github.hatchjaw.faust.FaustLibFileType"/>
+                implementationClass="com.github.hatchjaw.faust.lang.FaustLibFileType"/>
 
         <lang.parserDefinition
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.FaustParserDefinition"/>
+                implementationClass="com.github.hatchjaw.faust.lang.parser.FaustParserDefinition"/>
 
         <lang.syntaxHighlighterFactory
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.FaustSyntaxHighlighterFactory"/>
+                implementationClass="com.github.hatchjaw.faust.ide.highlighter.FaustSyntaxHighlighterFactory"/>
 
         <annotator
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.FaustAnnotator"/>
+                implementationClass="com.github.hatchjaw.faust.ide.annotator.FaustAnnotator"/>
 
         <lang.commenter
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.FaustCommenter"/>
+                implementationClass="com.github.hatchjaw.faust.ide.commenter.FaustCommenter"/>
 
         <lang.foldingBuilder
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.FaustFoldingBuilder"/>
+                implementationClass="com.github.hatchjaw.faust.ide.folding.FaustFoldingBuilder"/>
 
         <lang.braceMatcher
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.FaustPairedBraceMatcher"/>
+                implementationClass="com.github.hatchjaw.faust.ide.typing.FaustPairedBraceMatcher"/>
+
+        <lang.quoteHandler
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.ide.typing.FaustQuoteHandler"/>
     </extensions>
 
     <applicationListeners>

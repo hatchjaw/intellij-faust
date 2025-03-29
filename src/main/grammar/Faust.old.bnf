@@ -1,6 +1,6 @@
 {
     parserClass="com.github.hatchjaw.faust.FaustParser"
-    parserUtilClass="com.github.hatchjaw.faust.FaustParserUtil"
+    parserUtilClass="com.github.hatchjaw.faust.lang.parser.FaustParserUtil"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -10,8 +10,8 @@
     psiImplPackage="com.github.hatchjaw.faust.psi.impl"
 
     elementTypeHolderClass="com.github.hatchjaw.faust.psi.FaustTypes"
-    elementTypeClass="com.github.hatchjaw.faust.psi.FaustElementType"
-    tokenTypeClass="com.github.hatchjaw.faust.psi.FaustTokenType"
+    elementTypeClass="com.github.hatchjaw.faust.lang.psi.FaustElementType"
+    tokenTypeClass="com.github.hatchjaw.faust.lang.psi.FaustTokenType"
 
     tokens = [
 //        NEWLINE='regexp:(\R( \t)*)'

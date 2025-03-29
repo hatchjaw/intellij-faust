@@ -1,4 +1,4 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.ide.commenter
 
 import com.github.hatchjaw.faust.psi.FaustTypes
 import com.intellij.lang.CodeDocumentationAwareCommenter

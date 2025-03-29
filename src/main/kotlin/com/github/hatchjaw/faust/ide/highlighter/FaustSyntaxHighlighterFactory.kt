@@ -1,4 +1,4 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.ide.highlighter
 
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory

@@ -1,6 +1,7 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.ide.highlighter
 
-import com.github.hatchjaw.faust.lexer.FaustHighlightingLexer
+import com.github.hatchjaw.faust.lang.lexer.FaustHighlightingLexer
+import com.github.hatchjaw.faust.lang.psi.*
 import com.github.hatchjaw.faust.psi.FaustTypes.*
 import com.github.hatchjaw.faust.psi.*
 import com.intellij.lexer.Lexer

@@ -1,14 +1,10 @@
-package com.github.hatchjaw.faust.psi
+package com.github.hatchjaw.faust.lang.psi
 
-import com.github.hatchjaw.faust.FaustDSPFileType
-import com.github.hatchjaw.faust.FaustLibFileType
-import com.github.hatchjaw.faust.FaustLanguage
+import com.github.hatchjaw.faust.lang.FaustDSPFileType
+import com.github.hatchjaw.faust.lang.FaustLanguage
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
-import com.intellij.psi.PsiElement
-import com.intellij.psi.ResolveState
-import com.intellij.psi.scope.PsiScopeProcessor
 
 
 class FaustFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, FaustLanguage) {

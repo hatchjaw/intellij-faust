@@ -1,5 +1,6 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.lang.parser
 
+import com.github.hatchjaw.faust.lang.psi.FAUST_DOCUMENTATION_TAGS
 import com.github.hatchjaw.faust.psi.*
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.parser.GeneratedParserUtilBase

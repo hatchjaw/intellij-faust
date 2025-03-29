@@ -1,6 +1,6 @@
 {
     parserClass="com.github.hatchjaw.faust.FaustParser"
-    parserUtilClass="com.github.hatchjaw.faust.FaustParserUtil"
+    parserUtilClass="com.github.hatchjaw.faust.lang.parser.FaustParserUtil"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -10,8 +10,8 @@
     psiImplPackage="com.github.hatchjaw.faust.psi.impl"
 
     elementTypeHolderClass="com.github.hatchjaw.faust.psi.FaustTypes"
-    elementTypeClass="com.github.hatchjaw.faust.psi.FaustElementType"
-    tokenTypeClass="com.github.hatchjaw.faust.psi.FaustTokenType"
+    elementTypeClass="com.github.hatchjaw.faust.lang.psi.FaustElementType"
+    tokenTypeClass="com.github.hatchjaw.faust.lang.psi.FaustTokenType"
 
     extends(".+(Expression|Composition)")=Expression
     extends(".+Infix")=Infix
@@ -177,7 +177,7 @@
 
         WHITE_SPACE='regexp:[ \t\r\n]+'
         IDENTIFIER='regexp:(::)?_*[a-zA-Z]\w*(::_*[a-zA-Z]\w*)*'
-        STRING_LITERAL="regexp:\"[^\"]*\""
+        STRING_LITERAL="regexp:\"[^\"]*\"?"
         C_HEADER = "regexp:<\w+(\.[a-zA-Z])?>"
         LIB_DOC_COMMENT="regexp:(//#+([^#]+?)#+[\r\n])(//.*[\r\n])+"
         DEF_DOC_COMMENT="regexp:(//-+`([^-]+?)`-+[\r\n])(//.*[\r\n])+"

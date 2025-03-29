@@ -1,6 +1,6 @@
 package com.github.hatchjaw.faust.parser
 
-import com.github.hatchjaw.faust.FaustParserDefinition
+import com.github.hatchjaw.faust.lang.parser.FaustParserDefinition
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 

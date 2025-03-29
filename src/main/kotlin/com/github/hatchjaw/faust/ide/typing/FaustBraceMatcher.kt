@@ -1,5 +1,6 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.ide.typing
 
+import com.github.hatchjaw.faust.lang.psi.FAUST_COMMENTS
 import com.github.hatchjaw.faust.psi.*
 import com.github.hatchjaw.faust.psi.FaustTypes.*
 import com.intellij.lang.BracePair

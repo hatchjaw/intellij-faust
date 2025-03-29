@@ -1,5 +1,7 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.lang
 
+import com.github.hatchjaw.faust.FaustBundle
+import com.github.hatchjaw.faust.ide.icons.FaustIcons
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 

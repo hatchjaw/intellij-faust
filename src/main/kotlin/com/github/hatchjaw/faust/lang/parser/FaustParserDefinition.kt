@@ -1,6 +1,10 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.lang.parser
 
-import com.github.hatchjaw.faust.psi.FaustFile
+import com.github.hatchjaw.faust.FaustParser
+import com.github.hatchjaw.faust._FaustLexer
+import com.github.hatchjaw.faust.lang.FaustLanguage
+import com.github.hatchjaw.faust.lang.psi.FAUST_COMMENTS
+import com.github.hatchjaw.faust.lang.psi.FaustFile
 import com.github.hatchjaw.faust.psi.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition

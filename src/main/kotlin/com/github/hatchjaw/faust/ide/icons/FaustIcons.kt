@@ -1,4 +1,4 @@
-package com.github.hatchjaw.faust
+package com.github.hatchjaw.faust.ide.icons
 
 import com.intellij.openapi.util.IconLoader
 
