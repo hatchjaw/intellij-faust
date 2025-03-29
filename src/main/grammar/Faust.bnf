@@ -13,11 +13,29 @@
     elementTypeClass="com.github.hatchjaw.faust.psi.FaustElementType"
     tokenTypeClass="com.github.hatchjaw.faust.psi.FaustTokenType"
 
-    extends(".+(Expr|Comp)")=Expression
-    extends(".+Ifx")=Infix
+    extends(".+(Expression|Composition)")=Expression
+    extends(".+Infix")=Infix
     extends(".+Arg")=Argument
 
     tokens = [
+        BDOC='<mdoc>'
+        EDOC='</mdoc>'
+        BEQN='<equation>'
+        EEQN='</equation>'
+        BDGM='<diagram>'
+        EDGM='</diagram>'
+        NOTICE='regexp:<notice\s?/>'
+        BLST='<listing'
+        ELST='/>'
+        BMTD='<metadata>'
+        EMTD='</metadata>'
+//        LSTEQ='='
+        LSTDEPENDENCIES='dependencies'
+        LSTMDOCTAGS='mdoctags'
+        LSTDISTRIBUTED='distributed'
+        LSTTRUE='"true"'
+        LSTFALSE='"false"'
+
         PAR=','
         SEQ=':'
         MERGE=':>'
@@ -65,7 +83,7 @@
         WHERE='where'
 
         MEM='mem'
-        PRFIX='prefix'
+        PREFIX='prefix'
 
         INTCAST='int'
         FLOATCAST='float'
@@ -191,7 +209,34 @@ private Statement ::=
       FileImport
     | Declaration
     | Definition
-//    | BDOC Doc EDOC
+    | BDOC Documentation EDOC
+
+Documentation ::= DocElement*
+
+private DocElement ::=
+      <<parseDocFreeText>>
+    | DocEquation
+    | DocDiagram
+    | DocNotice
+    | DocList
+    | DocMetadata
+
+DocEquation ::= BEQN Expression EEQN
+DocDiagram ::= BDGM Expression EDGM
+DocNotice ::= NOTICE
+DocList ::= BLST [LstAttrList] ELST
+DocMetadata ::= BMTD MdName EMTD
+
+LstAttrList ::= LstAttrDef*
+
+LstAttrDef ::=
+      LSTDEPENDENCIES DEF LstAttrVal
+    | LSTMDOCTAGS DEF LstAttrVal
+    | LSTDISTRIBUTED DEF LstAttrVal
+
+LstAttrVal ::= LSTTRUE | LSTFALSE
+
+MdName ::= IDENTIFIER
 
 FileImport ::= IMPORT LPAREN UqString RPAREN ENDDEF
 
@@ -199,14 +244,16 @@ Declaration ::=
       DECLARE DecName String ENDDEF
     | DECLARE DefName DecName String ENDDEF
 
-Definition ::=
-      DefName LPAREN ArgList RPAREN DEF Expression ENDDEF
-    | DefName DEF Expression ENDDEF
-//    | Error ENDDEF
+private Definition ::=
+      FunctionDefinition
+    | SimpleDefinition
 
-RecDefinition ::=
-      RecName DEF Expression ENDDEF
-//    | Error ENDDEF
+SimpleDefinition ::= DefName DEF Expression ENDDEF
+
+// TODO: Identify definitions with pattern matching via (probably) annotation
+FunctionDefinition ::= DefName LPAREN ArgList RPAREN DEF Expression ENDDEF
+
+RecDefinition ::= RecName DEF Expression ENDDEF
 
 DefName ::= Ident
 
@@ -214,74 +261,78 @@ RecName ::= DELAY1 IDENTIFIER
 
 Params ::= (IDENTIFIER PAR)* IDENTIFIER
 
-Expression ::=
-      WithExpr
-    | LetrecExpr
-    | LetrecDefListExpr
-    | SequentialComp
-    | ParallelComp
-    | SplitComp
-    | MergeComp
-    | RecursiveComp
-    | InfixExpr
+ModEntry ::= UqString (SEQ Argument)?
 
-WithExpr ::= Expression WITH LBRACE DefList RBRACE
-LetrecExpr ::= Expression LETREC LBRACE RecList RBRACE
-LetrecDefListExpr ::= Expression LETREC LBRACE RecList WHERE DefList RBRACE
-ParallelComp ::= Expression PAR Expression
-SequentialComp ::= Expression SEQ Expression
-SplitComp ::= Expression SPLIT Expression
-MergeComp ::= Expression MERGE Expression
-RecursiveComp ::= Expression REC Expression
-InfixExpr ::= Infix
+ModList ::= (ModEntry PAR)* ModEntry
+
+Expression ::=
+      WithExpression
+    | LetrecExpression
+    | LetrecDefListExpression
+    | SequentialComposition
+    | ParallelComposition
+    | SplitComposition
+    | MergeComposition
+    | RecursiveComposition
+    | InfixExpression
+
+WithExpression ::= Expression WITH LBRACE DefList RBRACE
+LetrecExpression ::= Expression LETREC LBRACE RecList RBRACE
+LetrecDefListExpression ::= Expression LETREC LBRACE RecList WHERE DefList RBRACE
+ParallelComposition ::= Expression PAR Expression
+SequentialComposition ::= Expression SEQ Expression
+SplitComposition ::= Expression SPLIT Expression
+MergeComposition ::= Expression MERGE Expression
+RecursiveComposition ::= Expression REC Expression
+InfixExpression ::= Infix
 
 Infix ::=
-      AddIfx
-    | SubIfx
-    | MulIfx
-    | DivIfx
-    | ModIfx
-    | PowIfx
-    | DelayIfx
-    | Delay1Ifx
-    | AccessIfx
-    | AndIfx
-    | OrIfx
-    | XorIfx
-    | LshIfx
-    | RshIfx
-    | LtIfx
-    | LeIfx
-    | GtIfx
-    | GeIfx
-    | EqIfx
-    | NeIfx
-    | ParenIfx
-    | BrackIfx
+      AddInfix
+    | SubInfix
+    | MulInfix
+    | DivInfix
+    | ModInfix
+    | PowInfix
+    | DelayInfix
+    | Delay1Infix
+    | AccessInfix
+    | AndInfix
+    | OrInfix
+    | XorInfix
+    | LshInfix
+    | RshInfix
+    | LtInfix
+    | LeInfix
+    | GtInfix
+    | GeInfix
+    | EqInfix
+    | NeInfix
+    | ParenInfix
+    | BrackInfix
     | Primitive
 
-AddIfx ::= Infix ADD Infix
-SubIfx ::= Infix SUB Infix
-MulIfx ::= Infix MUL Infix
-DivIfx ::= Infix DIV Infix
-ModIfx ::= Infix MOD Infix
-PowIfx ::= Infix POWOP Infix
-DelayIfx ::= Infix DELAY Infix
-Delay1Ifx::= Infix DELAY1
-AccessIfx ::= Infix DOT IDENTIFIER
-AndIfx ::= Infix AND Infix
-OrIfx ::= Infix OR Infix
-XorIfx ::= Infix XOR Infix
-LshIfx ::= Infix LSH Infix
-RshIfx ::= Infix RSH Infix
-LtIfx ::= Infix LT Infix
-LeIfx ::= Infix LE Infix
-GtIfx ::= Infix GT Infix
-GeIfx ::= Infix GE Infix
-EqIfx ::= Infix EQ Infix
-NeIfx ::= Infix NE Infix
-ParenIfx ::= Infix LPAREN ArgList RPAREN
-BrackIfx ::= Infix LBRACK DefList RBRACK
+AddInfix ::= Infix ADD Infix
+SubInfix ::= Infix SUB Infix
+MulInfix ::= Infix MUL Infix
+DivInfix ::= Infix DIV Infix
+ModInfix ::= Infix MOD Infix
+PowInfix ::= Infix POWOP Infix
+DelayInfix ::= Infix DELAY Infix
+Delay1Infix::= Infix DELAY1
+AccessInfix ::= Infix DOT IDENTIFIER
+AndInfix ::= Infix AND Infix
+OrInfix ::= Infix OR Infix
+XorInfix ::= Infix XOR Infix
+LshInfix ::= Infix LSH Infix
+RshInfix ::= Infix RSH Infix
+LtInfix ::= Infix LT Infix
+LeInfix ::= Infix LE Infix
+GtInfix ::= Infix GT Infix
+GeInfix ::= Infix GE Infix
+EqInfix ::= Infix EQ Infix
+NeInfix ::= Infix NE Infix
+ParenInfix ::= Infix LPAREN ArgList RPAREN
+BrackInfix ::= Infix LBRACK DefList RBRACK
 Primitive ::=
       IDENTIFIER
     | SUB IDENTIFIER
@@ -345,17 +396,16 @@ Primitive ::=
     | HIGHEST
     | LPAREN Expression RPAREN
     | LambdaAbstraction
-//    | LBRACK ModList LAPPLY Expression RBRACK
+    | WidgetModulation
     | PatternAbstraction
     | ForeignFunction
     | ForeignConstant
     | ForeignVariable
-    | COMPONENT LPAREN UqString RPAREN
-    | LIBRARY LPAREN UqString RPAREN
+    | ComponentConstruction
+    | LibraryConstruction
     | EnvironmentConstruction
     | WaveformPrimitive
-    | ROUTE LPAREN Argument PAR Argument RPAREN // Fake route?
-    | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
+    | RoutePrimitive
     | UiButton
     | UiCheckbox
     | UiVslider
@@ -366,12 +416,17 @@ Primitive ::=
     | UiTgroup
     | UiVbargraph
     | UiHbargraph
-    | SoundfilePrim
-    | Iteration
+    | SoundfilePrimitive
+    | IterationParallel
+    | IterationSequential
+    | IterationSum
+    | IterationProduct
     | Inputs
     | Outputs {
     extends=Infix
 }
+
+WidgetModulation ::= LBRACK ModList LAPPLY Expression RBRACK
 
 PatternAbstraction ::= CASE LBRACE RuleList RBRACE
 
@@ -379,7 +434,15 @@ LambdaAbstraction ::= LAMBDA LPAREN Params RPAREN DOT LPAREN Expression RPAREN
 
 EnvironmentConstruction ::= ENVIRONMENT LBRACE StmtList RBRACE
 
+ComponentConstruction ::= COMPONENT LPAREN UqString RPAREN
+
+LibraryConstruction ::= LIBRARY LPAREN UqString RPAREN
+
 WaveformPrimitive ::= WAVEFORM LBRACE ValList RBRACE
+
+RoutePrimitive ::=
+      ROUTE LPAREN Argument PAR Argument RPAREN // "Fake route"?
+    | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
 
 Ident ::= IDENTIFIER
 
@@ -406,13 +469,19 @@ UqString ::= STRING_LITERAL
 
 Fstring ::= STRING_LITERAL | C_HEADER
 
-Iteration ::= (ITER_PAR | ITER_SEQ | ITER_SUM | ITER_PROD) LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+IterationParallel ::= ITER_PAR LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+IterationSequential ::= ITER_SEQ LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+IterationSum ::= ITER_SUM LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+IterationProduct ::= ITER_PROD LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
 
 Inputs ::= INS LPAREN Expression RPAREN
 Outputs ::= OUTS LPAREN Expression RPAREN
+
 ForeignFunction ::= FFUNCTION LPAREN Signature PAR Fstring PAR String RPAREN
 ForeignConstant ::= FCONSTANT LPAREN Type IDENTIFIER PAR Fstring RPAREN
 ForeignVariable ::= FVARIABLE LPAREN Type IDENTIFIER PAR Fstring RPAREN
+
+// TODO: Identify parameter metadata
 UiButton ::= BUTTON LPAREN UqString RPAREN
 UiCheckbox ::= CHECKBOX LPAREN UqString RPAREN
 UiVslider ::= VSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
@@ -423,7 +492,8 @@ UiHgroup ::= HGROUP LPAREN UqString PAR Expression RPAREN
 UiTgroup ::= TGROUP LPAREN UqString PAR Expression RPAREN
 UiVbargraph ::= VBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN
 UiHbargraph ::= HBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN
-SoundfilePrim ::= SOUNDFILE LPAREN UqString PAR Argument RPAREN
+
+SoundfilePrimitive ::= SOUNDFILE LPAREN UqString PAR Argument RPAREN
 
 Signature ::=
       Type Ident LPAREN TypeList RPAREN

@@ -2,7 +2,6 @@ package com.github.hatchjaw.faust
 
 import com.github.hatchjaw.faust.psi.*
 import com.github.hatchjaw.faust.psi.FaustTypes.*
-import com.github.hatchjaw.faust.psi.impl.FaustInfixExprImpl
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.CustomFoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
@@ -20,12 +19,12 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
 
     override fun getLanguagePlaceholderText(node: ASTNode, range: TextRange): String {
         return when (node.psi) {
-            is FaustInfixExprImpl,
-            is FaustMergeComp,
-            is FaustSequentialComp,
-            is FaustSplitComp,
-            is FaustRecursiveComp,
-            is FaustParallelComp -> "..."
+            is FaustInfixExpression,
+            is FaustMergeComposition,
+            is FaustSequentialComposition,
+            is FaustSplitComposition,
+            is FaustRecursiveComposition,
+            is FaustParallelComposition -> "..."
 
             is PsiComment -> when (node.psi.elementType) {
                 LIB_DOC_COMMENT -> "//## ${Regex("#+ (.*?) #+").find(node.text)?.groupValues?.get(1) ?: "..."} ##"
@@ -55,7 +54,7 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         private val descriptors: MutableList<FoldingDescriptor>
     ) : FaustVisitor() {
 
-        override fun visitWithExpr(o: FaustWithExpr) {
+        override fun visitWithExpression(o: FaustWithExpression) {
             val start = o.expression.nextSibling.nextSibling.endOffset // Suspect
             val end = o.lastChild.endOffset
             descriptors += FoldingDescriptor(o.node, TextRange(start, end))
@@ -73,7 +72,7 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             descriptors += FoldingDescriptor(o.node, TextRange(start, end))
         }
 
-        override fun visitLetrecExpr(o: FaustLetrecExpr) {
+        override fun visitLetrecExpression(o: FaustLetrecExpression) {
             val start = o.expression.nextSibling.nextSibling.endOffset // Also suspect
             val end = o.lastChild.endOffset
             descriptors += FoldingDescriptor(o.node, TextRange(start, end))
@@ -85,14 +84,26 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
             descriptors += FoldingDescriptor(o.node, TextRange(start, end))
         }
 
-        override fun visitIteration(o: FaustIteration) {
+        override fun visitIterationParallel(o: FaustIterationParallel) {
+            fold(o.expression)
+        }
+
+        override fun visitIterationSequential(o: FaustIterationSequential) {
+            fold(o.expression)
+        }
+
+        override fun visitIterationSum(o: FaustIterationSum) {
+            fold(o.expression)
+        }
+
+        override fun visitIterationProduct(o: FaustIterationProduct) {
             fold(o.expression)
         }
 
         override fun visitComment(comment: PsiComment) {
             when (comment.tokenType) {
                 BLOCK_COMMENT -> fold(comment)
-                in FaustParserUtil.FAUST_DOC_COMMENTS -> descriptors += FoldingDescriptor(
+                in FAUST_DOC_COMMENTS -> descriptors += FoldingDescriptor(
                     comment.node,
                     TextRange(comment.startOffset, comment.endOffset - 1)
                 )

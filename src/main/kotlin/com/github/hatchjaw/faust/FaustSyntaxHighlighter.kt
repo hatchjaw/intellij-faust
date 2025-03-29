@@ -2,6 +2,7 @@ package com.github.hatchjaw.faust
 
 import com.github.hatchjaw.faust.lexer.FaustHighlightingLexer
 import com.github.hatchjaw.faust.psi.FaustTypes.*
+import com.github.hatchjaw.faust.psi.*
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -23,32 +24,39 @@ class FaustSyntaxHighlighter : SyntaxHighlighterBase() {
             when (tokenType) {
                 LINE_COMMENT -> DefaultColor.LINE_COMMENT
                 BLOCK_COMMENT -> DefaultColor.BLOCK_COMMENT
-                in FaustParserUtil.FAUST_DOC_COMMENTS -> DefaultColor.DOC_COMMENT
+                in FAUST_DOC_COMMENTS -> DefaultColor.DOC_COMMENT
 
-                in FaustParserUtil.FAUST_STRINGS -> DefaultColor.STRING
+                in FAUST_STRINGS -> DefaultColor.STRING
 
                 ENDDEF -> DefaultColor.SEMICOLON
                 NUMBER -> DefaultColor.NUMBER
+
+                IDENTIFIER -> DefaultColor.IDENTIFIER
 
                 LPAREN, RPAREN -> DefaultColor.PARENTHESES
                 LBRACE, RBRACE -> DefaultColor.BRACES
                 LBRACK, RBRACK -> DefaultColor.BRACKETS
 
-                in FaustParserUtil.FAUST_KEYWORDS -> DefaultColor.KEYWORD
+                in FAUST_KEYWORDS -> DefaultColor.KEYWORD
 
-                in FaustParserUtil.FAUST_FOREIGN_EXPRESSIONS,
-                in FaustParserUtil.FAUST_MATH_PRIMITIVES,
-                in FaustParserUtil.FAUST_TIME_PRIMITIVES,
-                in FaustParserUtil.FAUST_UI_PRIMITIVES,
-                in FaustParserUtil.FAUST_ITERATIONS,
-                in FaustParserUtil.FAUST_SELECTORS,
-                in FaustParserUtil.FAUST_TABLES,
-                WAVEFORM, SOUNDFILE -> DefaultColor.PREDEFINED_SYMBOL
+                in FAUST_FOREIGN_EXPRESSIONS,
+                in FAUST_MISC_PRIMITIVES,
+                in FAUST_MATH_PRIMITIVES,
+                in FAUST_TIME_PRIMITIVES,
+                in FAUST_UI_PRIMITIVES,
+                in FAUST_ITERATIONS,
+                in FAUST_SELECTORS,
+                in FAUST_TABLES -> DefaultColor.PREDEFINED_SYMBOL
 
-                in FaustParserUtil.FAUST_COMPOSITIONS,
-                in FaustParserUtil.FAUST_OPERATORS -> DefaultColor.OPERATION_SIGN
+                in FAUST_COMPOSITIONS,
+                in FAUST_OPERATORS -> DefaultColor.OPERATION_SIGN
 
                 LAMBDA -> DefaultColor.LABEL
+
+                in FAUST_METADATA -> DefaultColor.METADATA
+
+                in FAUST_TYPECASTS,
+                in FAUST_VARIANTS -> DefaultColor.INTERFACE_NAME
 
                 TokenType.BAD_CHARACTER -> HighlighterColors.BAD_CHARACTER
 

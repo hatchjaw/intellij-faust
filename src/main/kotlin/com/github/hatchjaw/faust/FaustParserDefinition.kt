@@ -1,7 +1,7 @@
 package com.github.hatchjaw.faust
 
 import com.github.hatchjaw.faust.psi.FaustFile
-import com.github.hatchjaw.faust.psi.FaustTypes
+import com.github.hatchjaw.faust.psi.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
@@ -36,7 +36,7 @@ class FaustParserDefinition : ParserDefinition {
         return FaustFile(viewProvider)
     }
 
-    override fun getCommentTokens(): TokenSet = FaustParserUtil.FAUST_COMMENTS
+    override fun getCommentTokens(): TokenSet = FAUST_COMMENTS
 
     override fun getStringLiteralElements(): TokenSet = TokenSet.EMPTY
 }

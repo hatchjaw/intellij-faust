@@ -25,6 +25,7 @@ import static com.github.hatchjaw.faust.psi.FaustTypes.*;
 EOL=\R
 WHITE_SPACE=\s+
 
+NOTICE=<notice[ \t\n\x0B\f\r]?"/">
 WHITE_SPACE=[ \t\r\n]+
 IDENTIFIER=(::)?_*[a-zA-Z][a-zA-Z_0-9]*(::_*[a-zA-Z][a-zA-Z_0-9]*)*
 STRING_LITERAL=\"[^\"]*\"
@@ -39,6 +40,21 @@ NUMBER=([0-9]+(\.[0-9]*)?|(\.[0-9]+))([eE][+-]?[0-9]+)?f?
 <YYINITIAL> {
   {WHITE_SPACE}               { return WHITE_SPACE; }
 
+  "<mdoc>"                    { return BDOC; }
+  "</mdoc>"                   { return EDOC; }
+  "<equation>"                { return BEQN; }
+  "</equation>"               { return EEQN; }
+  "<diagram>"                 { return BDGM; }
+  "</diagram>"                { return EDGM; }
+  "<listing"                  { return BLST; }
+  "/>"                        { return ELST; }
+  "<metadata>"                { return BMTD; }
+  "</metadata>"               { return EMTD; }
+  "dependencies"              { return LSTDEPENDENCIES; }
+  "mdoctags"                  { return LSTMDOCTAGS; }
+  "distributed"               { return LSTDISTRIBUTED; }
+  "\"true\""                  { return LSTTRUE; }
+  "\"false\""                 { return LSTFALSE; }
   ","                         { return PAR; }
   ":"                         { return SEQ; }
   ":>"                        { return MERGE; }
@@ -78,7 +94,7 @@ NUMBER=([0-9]+(\.[0-9]*)?|(\.[0-9]+))([eE][+-]?[0-9]+)?f?
   "letrec"                    { return LETREC; }
   "where"                     { return WHERE; }
   "mem"                       { return MEM; }
-  "prefix"                    { return PRFIX; }
+  "prefix"                    { return PREFIX; }
   "int"                       { return INTCAST; }
   "float"                     { return FLOATCAST; }
   "any"                       { return NOTYPECAST; }
@@ -149,8 +165,8 @@ NUMBER=([0-9]+(\.[0-9]*)?|(\.[0-9]+))([eE][+-]?[0-9]+)?f?
   "doubleprecision"           { return DOUBLEMODE; }
   "quadprecision"             { return QUADMODE; }
   "fixedpointprecision"       { return FIXEDPOINTMODE; }
-  "PREFIX"                    { return PREFIX; }
 
+  {NOTICE}                    { return NOTICE; }
   {WHITE_SPACE}               { return WHITE_SPACE; }
   {IDENTIFIER}                { return IDENTIFIER; }
   {STRING_LITERAL}            { return STRING_LITERAL; }
