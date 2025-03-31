@@ -147,14 +147,13 @@ tasks {
 
     generateLexer {
         sourceFile.set(file("src/main/grammar/_FaustLexer.flex"))
-        targetOutputDir.set(file("./src/main/gen/com/github/hatchjaw/faust"))
+        targetOutputDir.set(file("src/main/gen/com/github/hatchjaw/faust"))
         purgeOldFiles.set(true)
-//        dependsOn(generateParser)
     }
 
     generateParser {
-        sourceFile.set(file("./src/main/grammar/Faust.bnf"))
-        targetRootOutputDir.set(file("./src/main/gen/"))
+        sourceFile.set(file("src/main/grammar/Faust.bnf"))
+        targetRootOutputDir.set(file("src/main/gen"))
         pathToParser.set("FaustParser.java")
         pathToPsiRoot.set("psi")
         purgeOldFiles.set(true)
@@ -162,7 +161,7 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        dependsOn(generateParser, generateLexer)
+        dependsOn(generateLexer, generateParser)
     }
 }
 
