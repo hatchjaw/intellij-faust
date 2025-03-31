@@ -16,11 +16,11 @@
         <fileType
                 name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
                 implementationClass="com.github.hatchjaw.faust.lang.FaustDSPFileType"/>
-        <internalFileTemplate name="Faust DSP"/>
+<!--        <internalFileTemplate name="Faust DSP"/>-->
         <fileType
                 name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
                 implementationClass="com.github.hatchjaw.faust.lang.FaustLibFileType"/>
-        <internalFileTemplate name="Faust Library"/>
+<!--        <internalFileTemplate name="Faust Library"/>-->
 
         <lang.parserDefinition
                 language="Faust"
@@ -58,11 +58,7 @@
 
     <actions>
         <action id="Faust.NewFaustDSPFile"
-                class="com.github.hatchjaw.faust.ide.actions.FaustCreateDSPFileAction">
-            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
-        </action>
-        <action id="Faust.NewFaustLibFile"
-                class="com.github.hatchjaw.faust.ide.actions.FaustCreateLibFileAction">
+                class="com.github.hatchjaw.faust.ide.actions.FaustCreateFileAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
     </actions>
