@@ -1,6 +1,6 @@
 package com.github.hatchjaw.faust.ide.commenter
 
-import com.github.hatchjaw.faust.psi.FaustTypes
+import com.github.hatchjaw.faust.lang.psi.FaustElementTypes
 import com.intellij.lang.CodeDocumentationAwareCommenter
 import com.intellij.psi.PsiComment
 import com.intellij.psi.tree.IElementType
@@ -18,11 +18,11 @@ class FaustCommenter : CodeDocumentationAwareCommenter {
 
     override fun getCommentedBlockCommentSuffix(): String? = null
 
-    override fun getLineCommentTokenType(): IElementType? = FaustTypes.LINE_COMMENT
+    override fun getLineCommentTokenType(): IElementType? = FaustElementTypes.LINE_COMMENT
 
-    override fun getBlockCommentTokenType(): IElementType? = FaustTypes.BLOCK_COMMENT
+    override fun getBlockCommentTokenType(): IElementType? = FaustElementTypes.BLOCK_COMMENT
 
-    override fun getDocumentationCommentTokenType(): IElementType? = FaustTypes.DEF_DOC_COMMENT
+    override fun getDocumentationCommentTokenType(): IElementType? = FaustElementTypes.DEF_DOC_COMMENT
 
     override fun getDocumentationCommentPrefix(): String? = null
 

@@ -1,8 +1,7 @@
 package com.github.hatchjaw.faust.ide.typing
 
-import com.github.hatchjaw.faust.lang.psi.FAUST_COMMENTS
-import com.github.hatchjaw.faust.psi.*
-import com.github.hatchjaw.faust.psi.FaustTypes.*
+import com.github.hatchjaw.faust.lang.psi.*
+import com.github.hatchjaw.faust.lang.psi.FaustElementTypes.*
 import com.intellij.lang.BracePair
 import com.intellij.lang.PairedBraceMatcher
 import com.intellij.psi.PsiFile
@@ -18,7 +17,7 @@ class FaustBraceMatcher : PairedBraceMatcher {
     )
 
     override fun isPairedBracesAllowedBeforeType(lBraceType: IElementType, next: IElementType?): Boolean = next in TokenSet.orSet(
-        FAUST_COMMENTS,
+        FaustTokenSets.FAUST_COMMENTS,
         TokenSet.create(
             WHITE_SPACE,
             ENDDEF,

@@ -1,15 +1,17 @@
 {
-    parserClass="com.github.hatchjaw.faust.FaustParser"
+    parserClass="com.github.hatchjaw.faust.lang.parser.FaustParser"
     parserUtilClass="com.github.hatchjaw.faust.lang.parser.FaustParserUtil"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
     psiClassPrefix="Faust"
     psiImplClassSuffix="Impl"
-    psiPackage="com.github.hatchjaw.faust.psi"
-    psiImplPackage="com.github.hatchjaw.faust.psi.impl"
+    psiPackage="com.github.hatchjaw.faust.lang.psi"
+    psiImplPackage="com.github.hatchjaw.faust.lang.psi.impl"
 
-    elementTypeHolderClass="com.github.hatchjaw.faust.psi.FaustTypes"
+    psiImplUtilClass="com.github.hatchjaw.faust.lang.psi.impl.FaustPsiImplUtil"
+
+    elementTypeHolderClass="com.github.hatchjaw.faust.lang.psi.FaustElementTypes"
     elementTypeClass="com.github.hatchjaw.faust.lang.psi.FaustElementType"
     tokenTypeClass="com.github.hatchjaw.faust.lang.psi.FaustTokenType"
 
@@ -255,7 +257,11 @@ FunctionDefinition ::= DefName LPAREN ArgList RPAREN DEF Expression ENDDEF
 
 RecDefinition ::= RecName DEF Expression ENDDEF
 
-DefName ::= Ident
+DefName ::= Ident {
+//   mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustNamedElementImpl"
+//   implements=["com.github.hatchjaw.faust.lang.psi.FaustNamedElement"]
+//   methods=[getName getNameIdentifier setName]
+}
 
 RecName ::= DELAY1 IDENTIFIER
 

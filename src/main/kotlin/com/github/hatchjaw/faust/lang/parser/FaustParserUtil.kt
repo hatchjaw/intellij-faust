@@ -1,7 +1,6 @@
 package com.github.hatchjaw.faust.lang.parser
 
-import com.github.hatchjaw.faust.lang.psi.FAUST_DOCUMENTATION_TAGS
-import com.github.hatchjaw.faust.psi.*
+import com.github.hatchjaw.faust.lang.psi.*
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.parser.GeneratedParserUtilBase
 
@@ -11,7 +10,7 @@ object FaustParserUtil : GeneratedParserUtilBase() {
     fun parseDocFreeText(builder: PsiBuilder, level: Int): Boolean {
         val tokenType = builder.tokenType
         val result = when (tokenType) {
-            in FAUST_DOCUMENTATION_TAGS -> false
+            in FaustTokenSets.FAUST_DOCUMENTATION_TAGS -> false
 
             else -> true
         }

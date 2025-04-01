@@ -1,9 +1,9 @@
 package com.github.hatchjaw.faust.ide.folding
 
-import com.github.hatchjaw.faust.lang.psi.FAUST_DOC_COMMENTS
+import com.github.hatchjaw.faust.lang.psi.FaustTokenSets
 import com.github.hatchjaw.faust.lang.psi.FaustFile
-import com.github.hatchjaw.faust.psi.*
-import com.github.hatchjaw.faust.psi.FaustTypes.*
+import com.github.hatchjaw.faust.lang.psi.*
+import com.github.hatchjaw.faust.lang.psi.FaustElementTypes.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.CustomFoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
@@ -105,7 +105,7 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         override fun visitComment(comment: PsiComment) {
             when (comment.tokenType) {
                 BLOCK_COMMENT -> fold(comment)
-                in FAUST_DOC_COMMENTS -> descriptors += FoldingDescriptor(
+                in FaustTokenSets.FAUST_DOC_COMMENTS -> descriptors += FoldingDescriptor(
                     comment.node,
                     TextRange(comment.startOffset, comment.endOffset - 1)
                 )

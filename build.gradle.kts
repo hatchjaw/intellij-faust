@@ -147,8 +147,8 @@ tasks {
 
     generateLexer {
         sourceFile.set(file("src/main/grammar/_FaustLexer.flex"))
-        targetOutputDir.set(file("src/main/gen/com/github/hatchjaw/faust"))
-        purgeOldFiles.set(true)
+        targetOutputDir.set(file("src/main/gen/com/github/hatchjaw/faust/lang/parser"))
+        purgeOldFiles.set(false)
     }
 
     generateParser {
@@ -157,7 +157,7 @@ tasks {
         pathToParser.set("FaustParser.java")
         pathToPsiRoot.set("psi")
         purgeOldFiles.set(true)
-        dependsOn(generateLexer)
+//        classpath(project(":grammar-kit-fake-psi-deps").sourceSets.main.get().runtimeClasspath) // see intellij-rust
     }
 
     withType<KotlinCompile> {

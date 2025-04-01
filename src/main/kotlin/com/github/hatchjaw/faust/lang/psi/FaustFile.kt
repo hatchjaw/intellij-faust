@@ -8,12 +8,8 @@ import com.intellij.psi.FileViewProvider
 
 
 class FaustFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, FaustLanguage) {
+
     override fun getFileType(): FileType = FaustDSPFileType
 
     override fun toString(): String = "Faust File"
-
-//    override fun processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
-//        processDeclarations(this, processor, state, lastParent, place)
-//        return false
-//    }
 }

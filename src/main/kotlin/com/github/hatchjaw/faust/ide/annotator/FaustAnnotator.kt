@@ -1,6 +1,6 @@
 package com.github.hatchjaw.faust.ide.annotator
 
-import com.github.hatchjaw.faust.psi.FaustDefName
+import com.github.hatchjaw.faust.lang.psi.FaustDefName
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
@@ -16,7 +16,7 @@ class FaustAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
-            is FaustDefName -> holder.newAnnotation(HighlightSeverity.INFORMATION, "")
+            is FaustDefName -> holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(element)
                 .textAttributes(DEFINITION)
                 .create()

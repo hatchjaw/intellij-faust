@@ -9,6 +9,7 @@
     <resource-bundle>messages.FaustBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
+        <!-- TODO: this should be how block diagrams and UI are displayed. -->
         <toolWindow
                 factoryClass="com.github.hatchjaw.faust.toolWindow.MyToolWindowFactory"
                 id="MyToolWindow"/>
@@ -16,11 +17,9 @@
         <fileType
                 name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
                 implementationClass="com.github.hatchjaw.faust.lang.FaustDSPFileType"/>
-<!--        <internalFileTemplate name="Faust DSP"/>-->
         <fileType
                 name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
                 implementationClass="com.github.hatchjaw.faust.lang.FaustLibFileType"/>
-<!--        <internalFileTemplate name="Faust Library"/>-->
 
         <lang.parserDefinition
                 language="Faust"
@@ -49,6 +48,10 @@
         <lang.quoteHandler
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.ide.typing.FaustQuoteHandler"/>
+
+        <lang.findUsagesProvider
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.ide.search.FaustFindUsagesProvider"/>
     </extensions>
 
     <applicationListeners>

@@ -1,11 +1,8 @@
 package com.github.hatchjaw.faust.lang.parser
 
-import com.github.hatchjaw.faust.FaustParser
-import com.github.hatchjaw.faust._FaustLexer
 import com.github.hatchjaw.faust.lang.FaustLanguage
-import com.github.hatchjaw.faust.lang.psi.FAUST_COMMENTS
 import com.github.hatchjaw.faust.lang.psi.FaustFile
-import com.github.hatchjaw.faust.psi.*
+import com.github.hatchjaw.faust.lang.psi.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
@@ -33,14 +30,14 @@ class FaustParserDefinition : ParserDefinition {
     override fun getFileNodeType(): IFileElementType = FILE
 
     override fun createElement(node: ASTNode?): PsiElement {
-        return FaustTypes.Factory.createElement(node)
+        return FaustElementTypes.Factory.createElement(node)
     }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return FaustFile(viewProvider)
     }
 
-    override fun getCommentTokens(): TokenSet = FAUST_COMMENTS
+    override fun getCommentTokens(): TokenSet = FaustTokenSets.FAUST_COMMENTS
 
     override fun getStringLiteralElements(): TokenSet = TokenSet.EMPTY
 }

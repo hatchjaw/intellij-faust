@@ -1,6 +1,5 @@
-package com.github.hatchjaw.faust.lang.lexer
+package com.github.hatchjaw.faust.lang.parser
 
-import com.github.hatchjaw.faust.psi.FaustTypes.STRING_LITERAL
 import com.intellij.lexer.LayeredLexer
 
 class FaustHighlightingLexer : LayeredLexer(FaustLexer()) {
