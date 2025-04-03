@@ -8,14 +8,13 @@ import com.github.hatchjaw.faust.lang.FaustDSPFileType
 class FaustElementFactory {
 
     companion object {
-        fun createDefName(project: Project, name: String): FaustDefName {
+        fun createIdent(project: Project, name: String): FaustIdent {
             val file: FaustFile = createFile(project, name)
-            return file.firstChild as FaustDefName
+            return file.firstChild as FaustIdent
         }
 
-        fun createFile(project: Project, text: String): FaustFile {
-            val name = "dummy.dsp"
-            return PsiFileFactory.getInstance(project).createFileFromText(name, FaustDSPFileType, text) as FaustFile
-        }
+        fun createFile(project: Project, text: String): FaustFile = PsiFileFactory
+            .getInstance(project)
+            .createFileFromText("dummy.dsp", FaustDSPFileType, text) as FaustFile
     }
 }

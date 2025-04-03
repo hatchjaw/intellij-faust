@@ -9,8 +9,6 @@
     psiPackage="com.github.hatchjaw.faust.lang.psi"
     psiImplPackage="com.github.hatchjaw.faust.lang.psi.impl"
 
-    psiImplUtilClass="com.github.hatchjaw.faust.lang.psi.impl.FaustPsiImplUtil"
-
     elementTypeHolderClass="com.github.hatchjaw.faust.lang.psi.FaustElementTypes"
     elementTypeClass="com.github.hatchjaw.faust.lang.psi.FaustElementType"
     tokenTypeClass="com.github.hatchjaw.faust.lang.psi.FaustTokenType"
@@ -257,15 +255,11 @@ FunctionDefinition ::= DefName LPAREN ArgList RPAREN DEF Expression ENDDEF
 
 RecDefinition ::= RecName DEF Expression ENDDEF
 
-DefName ::= Ident {
-//   mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustNamedElementImpl"
-//   implements=["com.github.hatchjaw.faust.lang.psi.FaustNamedElement"]
-//   methods=[getName getNameIdentifier setName]
-}
+DefName ::= Ident
 
-RecName ::= DELAY1 IDENTIFIER
+RecName ::= DELAY1 Ident
 
-Params ::= (IDENTIFIER PAR)* IDENTIFIER
+Params ::= (Ident PAR)* Ident
 
 ModEntry ::= UqString (SEQ Argument)?
 
@@ -325,7 +319,7 @@ ModInfix ::= Infix MOD Infix
 PowInfix ::= Infix POWOP Infix
 DelayInfix ::= Infix DELAY Infix
 Delay1Infix::= Infix DELAY1
-AccessInfix ::= Infix DOT IDENTIFIER
+AccessInfix ::= Infix DOT Ident
 AndInfix ::= Infix AND Infix
 OrInfix ::= Infix OR Infix
 XorInfix ::= Infix XOR Infix
@@ -340,8 +334,8 @@ NeInfix ::= Infix NE Infix
 ParenInfix ::= Infix LPAREN ArgList RPAREN
 BrackInfix ::= Infix LBRACK DefList RBRACK
 Primitive ::=
-      IDENTIFIER
-    | SUB IDENTIFIER
+      Ident
+    | SUB Ident
     | NUMBER
     | ADD NUMBER
     | SUB NUMBER
@@ -450,9 +444,12 @@ RoutePrimitive ::=
       ROUTE LPAREN Argument PAR Argument RPAREN // "Fake route"?
     | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
 
-Ident ::= IDENTIFIER
+Ident ::= IDENTIFIER {
+    mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustIdentMixin"
+    implements=["com.github.hatchjaw.faust.lang.psi.FaustNamedElement"]
+}
 
-DecName ::= IDENTIFIER
+DecName ::= Ident
 
 ArgList ::= (Argument PAR)* Argument
 
@@ -475,10 +472,10 @@ UqString ::= STRING_LITERAL
 
 Fstring ::= STRING_LITERAL | C_HEADER
 
-IterationParallel ::= ITER_PAR LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-IterationSequential ::= ITER_SEQ LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-IterationSum ::= ITER_SUM LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
-IterationProduct ::= ITER_PROD LPAREN IDENTIFIER PAR Argument PAR Expression RPAREN
+IterationParallel ::= ITER_PAR LPAREN Ident PAR Argument PAR Expression RPAREN
+IterationSequential ::= ITER_SEQ LPAREN Ident PAR Argument PAR Expression RPAREN
+IterationSum ::= ITER_SUM LPAREN Ident PAR Argument PAR Expression RPAREN
+IterationProduct ::= ITER_PROD LPAREN Ident PAR Argument PAR Expression RPAREN
 
 Inputs ::= INS LPAREN Expression RPAREN
 Outputs ::= OUTS LPAREN Expression RPAREN

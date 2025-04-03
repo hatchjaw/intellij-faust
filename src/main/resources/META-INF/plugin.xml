@@ -52,6 +52,18 @@
         <lang.findUsagesProvider
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.ide.search.FaustFindUsagesProvider"/>
+
+        <findUsagesHandlerFactory
+                implementation="com.github.hatchjaw.faust.ide.search.FaustFindUsagesHandlerFactory"/>
+
+        <psi.referenceContributor
+                language="Faust"
+                implementation="com.github.hatchjaw.faust.lang.resolve.FaustReferenceContributor"/>
+        <!--        <referencesSearch implementation="org.rust.lang.core.resolve.ref.RsReferencesSearchExtensionImpl"/>-->
+
+        <lang.elementManipulator
+                forClass="com.github.hatchjaw.faust.lang.psi.impl.FaustIdentImpl"
+                implementationClass="com.github.hatchjaw.faust.lang.psi.FaustElementManipulator"/>
     </extensions>
 
     <applicationListeners>
