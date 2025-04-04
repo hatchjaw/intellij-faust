@@ -240,9 +240,9 @@ MdName ::= IDENTIFIER
 
 FileImport ::= IMPORT LPAREN UqString RPAREN ENDDEF
 
-Declaration ::=
-      DECLARE DecName String ENDDEF
-    | DECLARE DefName DecName String ENDDEF
+Declaration ::= DECLARE (DefName DecName | DecName) String ENDDEF {
+    pin=1
+}
 
 private Definition ::=
       FunctionDefinition

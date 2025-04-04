@@ -49,6 +49,10 @@
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.ide.typing.FaustQuoteHandler"/>
 
+        <completion.contributor
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.lang.completion.FaustDeclarationCompletionContributor"/>
+
         <lang.findUsagesProvider
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.ide.search.FaustFindUsagesProvider"/>
