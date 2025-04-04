@@ -1,15 +1,13 @@
 package com.github.hatchjaw.faust.lang.psi.impl
 
-import com.github.hatchjaw.faust.lang.FaustLanguage
 import com.github.hatchjaw.faust.lang.psi.FaustElementFactory
-import com.github.hatchjaw.faust.lang.psi.FaustElementTypes
 import com.github.hatchjaw.faust.lang.psi.FaustIdent
 import com.github.hatchjaw.faust.lang.resolve.FaustReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 
-abstract class FaustIdentMixin(node: ASTNode) : ASTWrapperPsiElement(node), FaustIdent {
+abstract class FaustIdentImplMixin(node: ASTNode) : ASTWrapperPsiElement(node), FaustIdent {
     override fun getReference(): FaustReference = FaustReference(this)
 
     override fun getName(): String? = identifier.text

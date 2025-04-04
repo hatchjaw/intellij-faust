@@ -59,11 +59,21 @@
         <psi.referenceContributor
                 language="Faust"
                 implementation="com.github.hatchjaw.faust.lang.resolve.FaustReferenceContributor"/>
-        <!--        <referencesSearch implementation="org.rust.lang.core.resolve.ref.RsReferencesSearchExtensionImpl"/>-->
+
+<!--        <referencesSearch implementation="com.github.hatchjaw.faust.lang.resolve.ref.FaustReferencesSearchExtensionImpl"/>-->
 
         <lang.elementManipulator
                 forClass="com.github.hatchjaw.faust.lang.psi.impl.FaustIdentImpl"
                 implementationClass="com.github.hatchjaw.faust.lang.psi.FaustElementManipulator"/>
+
+        <lang.refactoringSupport
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.ide.refactoring.FaustRefactoringSupportProvider"/>
+
+<!--        <renamePsiElementProcessor implementation="com.github.hatchjaw.faust.ide.refactoring.FaustRenameProcessor"/>-->
+
+<!--        <gotoSymbolContributor implementation="com.github.hatchjaw.faust.ide.navigation.FaustSymbolNavigationContributor"/>-->
+
     </extensions>
 
     <applicationListeners>

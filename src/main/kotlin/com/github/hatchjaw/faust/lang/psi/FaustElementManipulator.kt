@@ -8,7 +8,7 @@ class FaustElementManipulator : AbstractElementManipulator<FaustIdentImpl>() {
     override fun handleContentChange(element: FaustIdentImpl, range: TextRange, newContent: String?): FaustIdentImpl {
         val oldText = element.text
         val newText = oldText.substring(0, range.startOffset) + newContent + oldText.substring(range.endOffset)
-        element.identifier.replace(FaustElementFactory.createIdent(element.project, newText))
+        element.identifier.replace(FaustElementFactory.createIdent(element.project, newText).identifier)
         return element
     }
 }

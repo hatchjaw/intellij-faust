@@ -34,7 +34,7 @@ class FaustReference(element: PsiElement) : PsiPolyVariantReferenceBase<PsiEleme
         return results.toTypedArray<ResolveResult>()
     }
 
-    // Maybe put this in FaustUtil...
+    // Maybe put this in FaustUtil... or use stub index instead
     private fun findIdents(project: Project, name: String): List<FaustIdent> {
         var result: MutableList<FaustIdent> = ArrayList()
         val virtualFiles = FileTypeIndex.getFiles(FaustDSPFileType, GlobalSearchScope.allScope(project))

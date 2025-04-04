@@ -248,10 +248,14 @@ private Definition ::=
       FunctionDefinition
     | SimpleDefinition
 
-SimpleDefinition ::= DefName DEF Expression ENDDEF
+SimpleDefinition ::= DefName DEF Expression ENDDEF {
+    pin=DefName
+}
 
 // TODO: Identify definitions with pattern matching via (probably) annotation
-FunctionDefinition ::= DefName LPAREN ArgList RPAREN DEF Expression ENDDEF
+FunctionDefinition ::= DefName LPAREN ArgList RPAREN DEF Expression ENDDEF {
+    pin=2
+}
 
 RecDefinition ::= RecName DEF Expression ENDDEF
 
@@ -445,7 +449,9 @@ RoutePrimitive ::=
     | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
 
 Ident ::= IDENTIFIER {
-    mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustIdentMixin"
+    mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustIdentImplMixin"
+//    extends="com.github.hatchjaw.faust.lang.psi.impl.FaustStubbedElementImpl<?>"
+//    stubClass="com.github.hatchjaw.faust.lang.stubs.FaustIdentStub"
     implements=["com.github.hatchjaw.faust.lang.psi.FaustNamedElement"]
 }
 
