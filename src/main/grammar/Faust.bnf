@@ -250,11 +250,13 @@ private Definition ::=
 
 SimpleDefinition ::= DefName DEF Expression ENDDEF {
     pin=DefName
+    mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustSimpleDefinitionImplMixin"
 }
 
 // TODO: Identify definitions with pattern matching via (probably) annotation
 FunctionDefinition ::= DefName LPAREN ArgList RPAREN DEF Expression ENDDEF {
     pin=2
+    mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustFunctionDefinitionImplMixin"
 }
 
 RecDefinition ::= RecName DEF Expression ENDDEF

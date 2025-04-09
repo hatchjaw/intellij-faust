@@ -18,11 +18,14 @@
 
 <!-- Plugin description -->
 Aims to provide the following support for the [Faust](https://faust.grame.fr) programming language:
-- [ ] syntax highlighting;
-- [ ] code completion;
-- [ ] documentation;
-- [ ] error reporting;
-- [ ] compilation?...
+- [x] syntax highlighting
+- [x] code folding
+- [x] auto-commenting
+- [ ] reference/definition-finding
+- [ ] code completion
+- [ ] documentation
+- [ ] error reporting
+- [ ] compilation
 <!-- Plugin description end -->
 
 ## Installation
