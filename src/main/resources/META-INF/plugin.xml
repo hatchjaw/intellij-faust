@@ -29,6 +29,10 @@
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.ide.highlighter.FaustSyntaxHighlighterFactory"/>
 
+        <runLineMarkerContributor
+                language="Faust"
+                implementationClass="com.github.hatchjaw.faust.ide.linemarkers.FaustProcessLineMarkerContributor"/>
+
         <annotator
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.ide.annotator.FaustAnnotator"/>
@@ -64,7 +68,7 @@
                 language="Faust"
                 implementation="com.github.hatchjaw.faust.lang.resolve.FaustReferenceContributor"/>
 
-<!--        <referencesSearch implementation="com.github.hatchjaw.faust.lang.resolve.ref.FaustReferencesSearchExtensionImpl"/>-->
+        <!--        <referencesSearch implementation="com.github.hatchjaw.faust.lang.resolve.ref.FaustReferencesSearchExtensionImpl"/>-->
 
         <lang.elementManipulator
                 forClass="com.github.hatchjaw.faust.lang.psi.impl.FaustIdentImpl"
@@ -74,13 +78,16 @@
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.ide.refactoring.FaustRefactoringSupportProvider"/>
 
-<!--        <renamePsiElementProcessor implementation="com.github.hatchjaw.faust.ide.refactoring.FaustRenameProcessor"/>-->
+        <!--        <renamePsiElementProcessor implementation="com.github.hatchjaw.faust.ide.refactoring.FaustRenameProcessor"/>-->
 
-        <gotoSymbolContributor implementation="com.github.hatchjaw.faust.ide.navigation.FaustSymbolNavigationContributor"/>
+        <gotoSymbolContributor
+                implementation="com.github.hatchjaw.faust.ide.navigation.FaustSymbolNavigationContributor"/>
 
         <lang.psiStructureViewFactory
                 language="Faust"
                 implementationClass="com.github.hatchjaw.faust.ide.structure.FaustPsiStructureViewFactory"/>
+
+        <navbar implementation="com.github.hatchjaw.faust.ide.structure.FaustNavBarModelExtension"/>
     </extensions>
 
     <applicationListeners>

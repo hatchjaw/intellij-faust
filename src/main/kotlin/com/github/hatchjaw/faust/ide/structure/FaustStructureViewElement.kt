@@ -44,13 +44,13 @@ class FaustStructureViewElement(private val element: NavigatablePsiElement) : St
 //        return childElements.map2Array { FaustStructureViewElement(it as NavigatablePsiElement) }
     }
 
-    private val childElements: List<PsiElement>
-        get() = when (val psi = psi) {
-            is FaustSimpleDefinition -> listOf(psi.defName.ident)
-            is FaustFunctionDefinition -> listOf(psi.defName.ident)
-
-            else -> emptyList()
-        }
+//    private val childElements: List<PsiElement>
+//        get() = when (val psi = psi) {
+//            is FaustSimpleDefinition -> listOf(psi.defName.ident)
+//            is FaustFunctionDefinition -> listOf(psi.defName.ident)
+//
+//            else -> emptyList()
+//        }
 
     override fun getValue(): PsiElement? {
 //        return when (element) {
