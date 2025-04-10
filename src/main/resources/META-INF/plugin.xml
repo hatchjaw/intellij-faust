@@ -76,7 +76,7 @@
 
 <!--        <renamePsiElementProcessor implementation="com.github.hatchjaw.faust.ide.refactoring.FaustRenameProcessor"/>-->
 
-<!--        <gotoSymbolContributor implementation="com.github.hatchjaw.faust.ide.navigation.FaustSymbolNavigationContributor"/>-->
+        <gotoSymbolContributor implementation="com.github.hatchjaw.faust.ide.navigation.FaustSymbolNavigationContributor"/>
 
         <lang.psiStructureViewFactory
                 language="Faust"
