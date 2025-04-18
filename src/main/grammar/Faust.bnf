@@ -209,9 +209,11 @@ private Statement ::=
       FileImport
     | Declaration
     | Definition
-    | BDOC Documentation EDOC
+//    | BDOC Documentation EDOC
+    | Documentation
 
-Documentation ::= DocElement*
+//Documentation ::= DocElement*
+Documentation ::= BDOC DocElement* EDOC { pin=1 }
 
 private DocElement ::=
       <<parseDocFreeText>>
@@ -238,11 +240,9 @@ LstAttrVal ::= LSTTRUE | LSTFALSE
 
 MdName ::= IDENTIFIER
 
-FileImport ::= IMPORT LPAREN UqString RPAREN ENDDEF
+FileImport ::= IMPORT LPAREN UqString RPAREN ENDDEF { pin=1 }
 
-Declaration ::= DECLARE (DefName DecName | DecName) String ENDDEF {
-    pin=1
-}
+Declaration ::= DECLARE (DefName DecName | DecName) String ENDDEF { pin=1 }
 
 private Definition ::=
       FunctionDefinition
@@ -434,17 +434,17 @@ Primitive ::=
 
 WidgetModulation ::= LBRACK ModList LAPPLY Expression RBRACK
 
-PatternAbstraction ::= CASE LBRACE RuleList RBRACE
+PatternAbstraction ::= CASE LBRACE RuleList RBRACE { pin=1 }
 
 LambdaAbstraction ::= LAMBDA LPAREN Params RPAREN DOT LPAREN Expression RPAREN
 
-EnvironmentConstruction ::= ENVIRONMENT LBRACE StmtList RBRACE
+EnvironmentConstruction ::= ENVIRONMENT LBRACE StmtList RBRACE { pin=1 }
 
-ComponentConstruction ::= COMPONENT LPAREN UqString RPAREN
+ComponentConstruction ::= COMPONENT LPAREN UqString RPAREN { pin=1 }
 
-LibraryConstruction ::= LIBRARY LPAREN UqString RPAREN
+LibraryConstruction ::= LIBRARY LPAREN UqString RPAREN { pin=1 }
 
-WaveformPrimitive ::= WAVEFORM LBRACE ValList RBRACE
+WaveformPrimitive ::= WAVEFORM LBRACE ValList RBRACE { pin=1 }
 
 RoutePrimitive ::=
       ROUTE LPAREN Argument PAR Argument RPAREN // "Fake route"?
@@ -480,31 +480,31 @@ UqString ::= STRING_LITERAL
 
 Fstring ::= STRING_LITERAL | C_HEADER
 
-IterationParallel ::= ITER_PAR LPAREN Ident PAR Argument PAR Expression RPAREN
-IterationSequential ::= ITER_SEQ LPAREN Ident PAR Argument PAR Expression RPAREN
-IterationSum ::= ITER_SUM LPAREN Ident PAR Argument PAR Expression RPAREN
-IterationProduct ::= ITER_PROD LPAREN Ident PAR Argument PAR Expression RPAREN
+IterationParallel ::= ITER_PAR LPAREN Ident PAR Argument PAR Expression RPAREN { pin=2 }
+IterationSequential ::= ITER_SEQ LPAREN Ident PAR Argument PAR Expression RPAREN { pin=2 }
+IterationSum ::= ITER_SUM LPAREN Ident PAR Argument PAR Expression RPAREN { pin=2 }
+IterationProduct ::= ITER_PROD LPAREN Ident PAR Argument PAR Expression RPAREN { pin=2 }
 
-Inputs ::= INS LPAREN Expression RPAREN
-Outputs ::= OUTS LPAREN Expression RPAREN
+Inputs ::= INS LPAREN Expression RPAREN { pin=1 }
+Outputs ::= OUTS LPAREN Expression RPAREN { pin=1 }
 
-ForeignFunction ::= FFUNCTION LPAREN Signature PAR Fstring PAR String RPAREN
-ForeignConstant ::= FCONSTANT LPAREN Type IDENTIFIER PAR Fstring RPAREN
-ForeignVariable ::= FVARIABLE LPAREN Type IDENTIFIER PAR Fstring RPAREN
+ForeignFunction ::= FFUNCTION LPAREN Signature PAR Fstring PAR String RPAREN { pin=1 }
+ForeignConstant ::= FCONSTANT LPAREN Type IDENTIFIER PAR Fstring RPAREN { pin=1 }
+ForeignVariable ::= FVARIABLE LPAREN Type IDENTIFIER PAR Fstring RPAREN { pin=1 }
 
 // TODO: Identify parameter metadata
-UiButton ::= BUTTON LPAREN UqString RPAREN
-UiCheckbox ::= CHECKBOX LPAREN UqString RPAREN
-UiVslider ::= VSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
-UiHslider ::= HSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
-UiNentry ::= NENTRY LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN
-UiVgroup ::= VGROUP LPAREN UqString PAR Expression RPAREN
-UiHgroup ::= HGROUP LPAREN UqString PAR Expression RPAREN
-UiTgroup ::= TGROUP LPAREN UqString PAR Expression RPAREN
-UiVbargraph ::= VBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN
-UiHbargraph ::= HBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN
+UiButton ::= BUTTON LPAREN UqString RPAREN { pin=1 }
+UiCheckbox ::= CHECKBOX LPAREN UqString RPAREN { pin=1 }
+UiVslider ::= VSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN { pin=1 }
+UiHslider ::= HSLIDER LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN { pin=1 }
+UiNentry ::= NENTRY LPAREN UqString PAR Argument PAR Argument PAR Argument PAR Argument RPAREN { pin=1 }
+UiVgroup ::= VGROUP LPAREN UqString PAR Expression RPAREN { pin=1 }
+UiHgroup ::= HGROUP LPAREN UqString PAR Expression RPAREN { pin=1 }
+UiTgroup ::= TGROUP LPAREN UqString PAR Expression RPAREN { pin=1 }
+UiVbargraph ::= VBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN { pin=1 }
+UiHbargraph ::= HBARGRAPH LPAREN UqString PAR Argument PAR Argument RPAREN { pin=1 }
 
-SoundfilePrimitive ::= SOUNDFILE LPAREN UqString PAR Argument RPAREN
+SoundfilePrimitive ::= SOUNDFILE LPAREN UqString PAR Argument RPAREN { pin=1 }
 
 Signature ::=
       Type Ident LPAREN TypeList RPAREN

@@ -44,11 +44,12 @@ class FaustRunConfiguration(project: Project, name: String, factory: Configurati
     override fun readExternal(element: Element) {
         super.readExternal(element)
 
-        element.getChild("workingDirectory")?.getAttributeValue("value")
-            ?.let { Paths.get(ExternalizablePath.localPathValue(it)) }
-            .let { workingDirectory = it }
+        element.children
+            .find { it.name == "option" && it.getAttributeValue("name") == "workingDirectory" }
+            ?.let { workingDirectory = Paths.get(ExternalizablePath.localPathValue(it.getAttributeValue("value"))) }
 
-        element.getChild("inputFiles")?.getAttributeValue("value")
-            ?.let { inputFiles = it }
+        element.children
+            .find { it.name == "option" && it.getAttributeValue("name") == "inputFiles" }
+            ?.let { inputFiles = it.getAttributeValue("value") }
     }
 }

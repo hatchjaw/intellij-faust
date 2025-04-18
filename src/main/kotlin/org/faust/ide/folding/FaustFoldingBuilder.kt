@@ -87,19 +87,19 @@ class FaustFoldingBuilder : CustomFoldingBuilder(), DumbAware {
         }
 
         override fun visitIterationParallel(o: FaustIterationParallel) {
-            fold(o.expression)
+            o.expression?.let { fold(it) }
         }
 
         override fun visitIterationSequential(o: FaustIterationSequential) {
-            fold(o.expression)
+            o.expression?.let { fold(it) }
         }
 
         override fun visitIterationSum(o: FaustIterationSum) {
-            fold(o.expression)
+            o.expression?.let { fold(it) }
         }
 
         override fun visitIterationProduct(o: FaustIterationProduct) {
-            fold(o.expression)
+            o.expression?.let { fold(it) }
         }
 
         override fun visitComment(comment: PsiComment) {
