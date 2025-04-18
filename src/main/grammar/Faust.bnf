@@ -1,17 +1,17 @@
 {
-    parserClass="com.github.hatchjaw.faust.lang.parser.FaustParser"
-    parserUtilClass="com.github.hatchjaw.faust.lang.parser.FaustParserUtil"
+    parserClass="org.faust.lang.parser.FaustParser"
+    parserUtilClass="org.faust.lang.parser.FaustParserUtil"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
     psiClassPrefix="Faust"
     psiImplClassSuffix="Impl"
-    psiPackage="com.github.hatchjaw.faust.lang.psi"
-    psiImplPackage="com.github.hatchjaw.faust.lang.psi.impl"
+    psiPackage="org.faust.lang.psi"
+    psiImplPackage="org.faust.lang.psi.impl"
 
-    elementTypeHolderClass="com.github.hatchjaw.faust.lang.psi.FaustElementTypes"
-    elementTypeClass="com.github.hatchjaw.faust.lang.psi.FaustElementType"
-    tokenTypeClass="com.github.hatchjaw.faust.lang.psi.FaustTokenType"
+    elementTypeHolderClass="org.faust.lang.psi.FaustElementTypes"
+    elementTypeClass="org.faust.lang.psi.FaustElementType"
+    tokenTypeClass="org.faust.lang.psi.FaustTokenType"
 
     extends(".+(Expression|Composition)")=Expression
     extends(".+Infix")=Infix
@@ -250,13 +250,13 @@ private Definition ::=
 
 SimpleDefinition ::= DefName DEF Expression ENDDEF {
     pin=DefName
-    mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustSimpleDefinitionImplMixin"
+    mixin="org.faust.lang.psi.impl.FaustSimpleDefinitionImplMixin"
 }
 
 // TODO: Identify definitions with pattern matching via (probably) annotation
 FunctionDefinition ::= DefName LPAREN ArgList RPAREN DEF Expression ENDDEF {
     pin=2
-    mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustFunctionDefinitionImplMixin"
+    mixin="org.faust.lang.psi.impl.FaustFunctionDefinitionImplMixin"
 }
 
 RecDefinition ::= RecName DEF Expression ENDDEF
@@ -451,10 +451,10 @@ RoutePrimitive ::=
     | ROUTE LPAREN Argument PAR Argument PAR Expression RPAREN
 
 Ident ::= IDENTIFIER {
-    mixin="com.github.hatchjaw.faust.lang.psi.impl.FaustIdentImplMixin"
-//    extends="com.github.hatchjaw.faust.lang.psi.impl.FaustStubbedElementImpl<?>"
-//    stubClass="com.github.hatchjaw.faust.lang.stubs.FaustIdentStub"
-    implements=["com.github.hatchjaw.faust.lang.psi.FaustNamedElement"]
+    mixin="org.faust.lang.psi.impl.FaustIdentImplMixin"
+//    extends="org.faust.lang.psi.impl.FaustStubbedElementImpl<?>"
+//    stubClass="org.faust.lang.stubs.FaustIdentStub"
+    implements=["org.faust.lang.psi.FaustNamedElement"]
 }
 
 DecName ::= Ident

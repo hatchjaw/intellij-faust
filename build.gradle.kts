@@ -147,7 +147,7 @@ tasks {
 
     generateLexer {
         sourceFile.set(file("src/main/grammar/_FaustLexer.flex"))
-        targetOutputDir.set(file("src/main/gen/com/github/hatchjaw/faust/lang/parser"))
+        targetOutputDir.set(file("src/main/gen/org/faust/lang/parser"))
         purgeOldFiles.set(false)
     }
 

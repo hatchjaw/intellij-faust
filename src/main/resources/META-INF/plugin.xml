@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.hatchjaw.faust</id>
+    <id>org.faust</id>
     <name>Faust Support</name>
     <vendor>hatchjaw</vendor>
 
@@ -11,93 +11,95 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- TODO: this should be how block diagrams and UI are displayed. -->
         <toolWindow
-                factoryClass="com.github.hatchjaw.faust.toolWindow.MyToolWindowFactory"
+                factoryClass="org.faust.toolWindow.MyToolWindowFactory"
                 id="MyToolWindow"/>
 
         <fileType
                 name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
-                implementationClass="com.github.hatchjaw.faust.lang.FaustDSPFileType"/>
+                implementationClass="org.faust.lang.FaustDSPFileType"/>
         <fileType
                 name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
-                implementationClass="com.github.hatchjaw.faust.lang.FaustLibFileType"/>
+                implementationClass="org.faust.lang.FaustLibFileType"/>
 
         <lang.parserDefinition
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.lang.parser.FaustParserDefinition"/>
+                implementationClass="org.faust.lang.parser.FaustParserDefinition"/>
 
         <lang.syntaxHighlighterFactory
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.highlighter.FaustSyntaxHighlighterFactory"/>
+                implementationClass="org.faust.ide.highlighter.FaustSyntaxHighlighterFactory"/>
 
         <runLineMarkerContributor
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.linemarkers.FaustProcessLineMarkerContributor"/>
+                implementationClass="org.faust.ide.linemarkers.FaustProcessLineMarkerContributor"/>
 
         <annotator
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.annotator.FaustAnnotator"/>
+                implementationClass="org.faust.ide.annotator.FaustAnnotator"/>
 
         <lang.commenter
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.commenter.FaustCommenter"/>
+                implementationClass="org.faust.ide.commenter.FaustCommenter"/>
 
         <lang.foldingBuilder
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.folding.FaustFoldingBuilder"/>
+                implementationClass="org.faust.ide.folding.FaustFoldingBuilder"/>
 
         <lang.braceMatcher
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.typing.FaustPairedBraceMatcher"/>
+                implementationClass="org.faust.ide.typing.FaustPairedBraceMatcher"/>
 
         <lang.quoteHandler
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.typing.FaustQuoteHandler"/>
+                implementationClass="org.faust.ide.typing.FaustQuoteHandler"/>
 
         <completion.contributor
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.lang.completion.FaustDeclarationCompletionContributor"/>
+                implementationClass="org.faust.lang.completion.FaustDeclarationCompletionContributor"/>
 
         <lang.findUsagesProvider
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.search.FaustFindUsagesProvider"/>
+                implementationClass="org.faust.ide.search.FaustFindUsagesProvider"/>
 
         <findUsagesHandlerFactory
-                implementation="com.github.hatchjaw.faust.ide.search.FaustFindUsagesHandlerFactory"/>
+                implementation="org.faust.ide.search.FaustFindUsagesHandlerFactory"/>
 
         <psi.referenceContributor
                 language="Faust"
-                implementation="com.github.hatchjaw.faust.lang.resolve.FaustReferenceContributor"/>
+                implementation="org.faust.lang.resolve.FaustReferenceContributor"/>
 
-        <!--        <referencesSearch implementation="com.github.hatchjaw.faust.lang.resolve.ref.FaustReferencesSearchExtensionImpl"/>-->
+        <!--        <referencesSearch implementation="org.faust.lang.resolve.ref.FaustReferencesSearchExtensionImpl"/>-->
 
         <lang.elementManipulator
-                forClass="com.github.hatchjaw.faust.lang.psi.impl.FaustIdentImpl"
-                implementationClass="com.github.hatchjaw.faust.lang.psi.FaustElementManipulator"/>
+                forClass="org.faust.lang.psi.impl.FaustIdentImpl"
+                implementationClass="org.faust.lang.psi.FaustElementManipulator"/>
 
         <lang.refactoringSupport
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.refactoring.FaustRefactoringSupportProvider"/>
+                implementationClass="org.faust.ide.refactoring.FaustRefactoringSupportProvider"/>
 
-        <!--        <renamePsiElementProcessor implementation="com.github.hatchjaw.faust.ide.refactoring.FaustRenameProcessor"/>-->
+        <!--        <renamePsiElementProcessor implementation="org.faust.ide.refactoring.FaustRenameProcessor"/>-->
 
         <gotoSymbolContributor
-                implementation="com.github.hatchjaw.faust.ide.navigation.FaustSymbolNavigationContributor"/>
+                implementation="org.faust.ide.navigation.FaustSymbolNavigationContributor"/>
 
         <lang.psiStructureViewFactory
                 language="Faust"
-                implementationClass="com.github.hatchjaw.faust.ide.structure.FaustPsiStructureViewFactory"/>
+                implementationClass="org.faust.ide.structure.FaustPsiStructureViewFactory"/>
 
-        <navbar implementation="com.github.hatchjaw.faust.ide.structure.FaustNavBarModelExtension"/>
+        <navbar implementation="org.faust.ide.structure.FaustNavBarModelExtension"/>
+
+        <configurationType implementation="org.faust.runconfig.FaustConfigurationType"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.hatchjaw.faust.listeners.MyApplicationActivationListener"
+        <listener class="org.faust.listeners.MyApplicationActivationListener"
                   topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 
     <actions>
         <action id="Faust.NewFaustDSPFile"
-                class="com.github.hatchjaw.faust.ide.actions.FaustCreateFileAction">
+                class="org.faust.ide.actions.FaustCreateFileAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
     </actions>
