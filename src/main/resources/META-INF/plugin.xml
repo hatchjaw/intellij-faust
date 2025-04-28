@@ -14,6 +14,7 @@
                 factoryClass="org.faust.toolWindow.MyToolWindowFactory"
                 id="MyToolWindow"/>
 
+        <!-- Register filetypes. -->
         <fileType
                 name="Faust DSP" language="Faust" extensions="dsp" fieldName="INSTANCE"
                 implementationClass="org.faust.lang.FaustDSPFileType"/>
@@ -21,42 +22,53 @@
                 name="Faust Library" language="Faust" extensions="lib" fieldName="INSTANCE"
                 implementationClass="org.faust.lang.FaustLibFileType"/>
 
+        <!-- Parser. -->
         <lang.parserDefinition
                 language="Faust"
                 implementationClass="org.faust.lang.parser.FaustParserDefinition"/>
 
+        <!-- Syntax highlighter. -->
         <lang.syntaxHighlighterFactory
                 language="Faust"
                 implementationClass="org.faust.ide.highlighter.FaustSyntaxHighlighterFactory"/>
 
+        <!-- Show 'Run' markers next to `process` lines. -->
         <runLineMarkerContributor
                 language="Faust"
                 implementationClass="org.faust.ide.linemarkers.FaustProcessLineMarkerContributor"/>
 
+        <!-- A 'silent' (i.e. no mouseover popup (yet)) annotator for the names of simple definitions and function
+        definitions. -->
         <annotator
                 language="Faust"
                 implementationClass="org.faust.ide.annotator.FaustAnnotator"/>
 
+        <!-- Comment/uncomment lines. -->
         <lang.commenter
                 language="Faust"
                 implementationClass="org.faust.ide.commenter.FaustCommenter"/>
 
+        <!-- Fold documentation comments, with/letrec/environment/etc. expressions, body of iterations, etc. -->
         <lang.foldingBuilder
                 language="Faust"
                 implementationClass="org.faust.ide.folding.FaustFoldingBuilder"/>
 
+        <!-- Match braces, parentheses, brackets. -->
         <lang.braceMatcher
                 language="Faust"
                 implementationClass="org.faust.ide.typing.FaustPairedBraceMatcher"/>
 
+        <!-- Automatically insert a second (double) quotation mark. -->
         <lang.quoteHandler
                 language="Faust"
                 implementationClass="org.faust.ide.typing.FaustQuoteHandler"/>
 
+        <!-- Completion suggestion for file/expression metadata declarations. -->
         <completion.contributor
                 language="Faust"
                 implementationClass="org.faust.lang.completion.FaustDeclarationCompletionContributor"/>
 
+        <!-- The following three entries relate to finding references, which is a complex topic. -->
         <lang.findUsagesProvider
                 language="Faust"
                 implementationClass="org.faust.ide.search.FaustFindUsagesProvider"/>
@@ -70,6 +82,7 @@
 
         <!--        <referencesSearch implementation="org.faust.lang.resolve.ref.FaustReferencesSearchExtensionImpl"/>-->
 
+        <!-- Rename refactoring is handled by the following two entries. -->
         <lang.elementManipulator
                 forClass="org.faust.lang.psi.impl.FaustIdentImpl"
                 implementationClass="org.faust.lang.psi.FaustElementManipulator"/>
@@ -80,27 +93,32 @@
 
         <!--        <renamePsiElementProcessor implementation="org.faust.ide.refactoring.FaustRenameProcessor"/>-->
 
+        <!-- Support for `Navigate > Symbol...` -->
         <gotoSymbolContributor
                 implementation="org.faust.ide.navigation.FaustSymbolNavigationContributor"/>
 
+        <!-- Display definitions in structure view. -->
         <lang.psiStructureViewFactory
                 language="Faust"
                 implementationClass="org.faust.ide.structure.FaustPsiStructureViewFactory"/>
 
+        <!-- Reflect structure in the navbar too. -->
         <navbar implementation="org.faust.ide.structure.FaustNavBarModelExtension"/>
 
+        <!-- Define run configurations. -->
         <configurationType implementation="org.faust.runconfig.FaustConfigurationType"/>
     </extensions>
 
+    <!-- Boilerplate stuff from the template; probably to be removed at some point. -->
     <applicationListeners>
         <listener class="org.faust.listeners.MyApplicationActivationListener"
                   topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 
+    <!-- Add Faust files to the `File > New` menu. -->
     <actions>
-        <action id="Faust.NewFaustDSPFile"
-                class="org.faust.ide.actions.FaustCreateFileAction">
-            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        <action id="Faust.NewFaustFile" class="org.faust.ide.actions.FaustCreateFileAction">
+            <add-to-group group-id="NewGroup"/>
         </action>
     </actions>
 </idea-plugin>
